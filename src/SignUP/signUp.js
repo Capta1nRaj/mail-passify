@@ -1,6 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
 
-const accountsModel = require("../models/accountsModel");
+const accountsModel = require("../../models/accountsModel");
+const otpModel = require("../../models/otpModel");
 
 const bcrypt = require("bcrypt");
 
@@ -11,7 +12,10 @@ require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const signUpOTPSend = require("./signUpOTPSend");
+
 async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
+
     await connect2MongoDB();
 
     // Getting Data From The Client
@@ -37,12 +41,12 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
     if (findIfUserNameAlreadyExistInDBOrNot !== null) {
         return {
             status: 200,
-            message: "User name already exists",
+            message: "User Name Already Exists",
         };
     } else if (findIfEmailIDAlreadyExistInDBOrNot !== null) {
         return {
             status: 200,
-            message: "Email id already exists",
+            message: "Email ID Already Exists",
         };
     } else if (checkIfuserReferralCodeExistInDBOrNot === null) {
         return {
@@ -74,9 +78,28 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
             userReferredBy: referredby,
         }).save();
 
+        // Generating Random OTP
+        const userOTP = randomstring.generate({
+            length: 6,
+            charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
+        });
+
+        // Securing OTP Via Bcrypt
+        const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+
+        // Sending OTP To User
+        await signUpOTPSend(username, userEmail, userOTP)
+
+        // Saving Details To DB
+        new otpModel({
+            userName: userName,
+            OTP: bcryptOTP
+        }).save();
+
         return {
             status: 201,
-            message: "Account created successfully",
+            message: "Account Created Successfully",
+            userName: username,
         };
     }
 

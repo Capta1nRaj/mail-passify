@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 mongoose.set('autoCreate', false);
 
 const SessionsSchema = new mongoose.Schema({
-    userEmail: {
+    userName: {
         type: String,
         required: true
     },
@@ -31,6 +31,6 @@ const SessionsSchema = new mongoose.Schema({
     timestamps: true
 });
 
-SessionsSchema.index({ userEmail: 1 }); // Creating a index on userEmail
+SessionsSchema.index({ userName: 1 }); // Creating a index on userEmail
 
 module.exports = mongoose.models.sessions || mongoose.model("sessions", SessionsSchema)

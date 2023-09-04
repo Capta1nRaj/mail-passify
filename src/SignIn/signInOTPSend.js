@@ -2,11 +2,12 @@ require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-async function sendOTPToUserMail(userName, userEmail, otp) {
+async function signInOTPSend(userName, userEmail, otp) {
+
   const msg = {
     to: userEmail,
     from: process.env.SENDGRID_EMAIL_ID,
-    subject: process.env.SENDGRID_MAIL_TITLE,
+    subject: process.env.SENDGRID_SIGN_IN_MAIL_TITLE,
     html: `
         <div style="width: 100%; margin: auto; font-size: 14px">
           <span style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; width: 0"></span>
@@ -81,4 +82,4 @@ async function sendOTPToUserMail(userName, userEmail, otp) {
   sgMail.send(msg);
 }
 
-module.exports = sendOTPToUserMail
+module.exports = signInOTPSend

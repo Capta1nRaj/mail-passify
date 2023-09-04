@@ -1,7 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
 
-const accountsModel = require("../models/accountsModel");
-const sessionsModel = require("../models/sessionsModel");
+const accountsModel = require("../../models/accountsModel");
+const sessionsModel = require("../../models/sessionsModel");
 
 const bcrypt = require("bcrypt");
 
@@ -12,9 +12,10 @@ require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const sendOTPToUserMail = require("./sendOTPToUserMail");
+const signInOTPSend = require("./signInOTPSend");
 
-async function signin(userEmail, userPassword) {
+async function signin(userName, userPassword) {
+
     await connect2MongoDB();
 
     async function getIPFromAmazon() {
@@ -22,13 +23,13 @@ async function signin(userEmail, userPassword) {
         return fetchingUserIP.ip;
     }
 
-    const email = userEmail;
+    const username = userName;
 
     const password = userPassword;
 
     const userIP = await getIPFromAmazon();
 
-    const findEmailIDToLogin = await accountsModel.findOne({ userEmail: email });
+    const findEmailIDToLogin = await accountsModel.findOne({ userName: username });
 
     if (findEmailIDToLogin === null) {
         return {
@@ -39,7 +40,7 @@ async function signin(userEmail, userPassword) {
         // Decrypting The Password From The User
         const decryptedPassword = await bcrypt.compare(password, findEmailIDToLogin.userPassword);
 
-        if (findEmailIDToLogin.userEmail === email && decryptedPassword === true) {
+        if (findEmailIDToLogin.userName === username && decryptedPassword === true) {
             // Generating Token Address
             const userTokenAddress = randomstring.generate({
                 length: 128,
@@ -64,18 +65,20 @@ async function signin(userEmail, userPassword) {
 
             // Saving Details To DB
             new sessionsModel({
-                userEmail: email,
+                userName: username,
                 token: bcryptToken,
                 userIP: bcryptUserIP,
                 OTP: bcryptOTP,
             }).save();
 
             // Sending OTP To Mail
-            await sendOTPToUserMail(findEmailIDToLogin.userName, email, userOTP);
+            await signInOTPSend(username, findEmailIDToLogin.userEmail, userOTP);
 
             return {
                 status: 200,
                 message: "Sign In Successful, OTP Sent To Mail",
+                userName: username,
+                token: userTokenAddress,
             };
         } else if (decryptedPassword === false) {
             return {
