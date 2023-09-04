@@ -48,6 +48,6 @@ const AccountsSchema = new mongoose.Schema({
 AccountsSchema.index({ userName: 1 }, { unique: true }); // Creating a unique index on userName
 AccountsSchema.index({ userEmail: 1 }, { unique: true }); // Creating a unique index on userEmail
 AccountsSchema.index({ userReferralCode: 1 }, { unique: true }); // Creating a unique index on userReferralCode
-AccountsSchema.index({ userReferredBy: 1 }); // Creating a unique index on referredBy
+AccountsSchema.index({ userReferredBy: 1 }); // Creating a index on referredBy
 
 module.exports = mongoose.models.accounts || mongoose.model("accounts", AccountsSchema)
