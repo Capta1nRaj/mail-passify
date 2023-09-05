@@ -1,6 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
 
 const accountsModel = require("../../models/accountsModel");
+const otpModel = require("../../models/otpModel");
 const sessionsModel = require("../../models/sessionsModel");
 
 const bcrypt = require("bcrypt");
@@ -13,12 +14,16 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signInOTPSend = require("./signInOTPSend");
+const signUpOTPSend = require("../SignUP/signUpOTPSend");
 
 async function signin(userName, userPassword) {
 
     await connect2MongoDB();
 
-    async function getIPFromAmazon() {
+    // Random Salt Generator
+    const randomSaltGenerator = Math.floor(Math.random() * 6) + 10;
+
+    async function getIPFromUser() {
         const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then((response) => response.json());
         return fetchingUserIP.ip;
     }
@@ -27,9 +32,34 @@ async function signin(userName, userPassword) {
 
     const password = userPassword;
 
-    const userIP = await getIPFromAmazon();
+    const userIP = await getIPFromUser();
 
     const findEmailIDToLogin = await accountsModel.findOne({ userName: username });
+
+    if (findEmailIDToLogin.userVerified === false) {
+
+        // Generating Random OTP
+        const userOTP = randomstring.generate({
+            length: 6,
+            charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
+        });
+
+        // Securing OTP Via Bcrypt
+        const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+
+        // Saving Details To DB
+        new otpModel({
+            userName: username,
+            OTP: bcryptOTP
+        }).save();
+
+        signUpOTPSend(username, findEmailIDToLogin.userEmail, userOTP)
+
+        return {
+            status: 200,
+            message: "Please Verify Your Account"
+        }
+    }
 
     if (findEmailIDToLogin === null) {
         return {
@@ -54,7 +84,6 @@ async function signin(userName, userPassword) {
             });
 
             // Securing Token Via Bcrypt
-            const randomSaltGenerator = Math.floor(Math.random() * 6) + 10;
             const bcryptToken = await bcrypt.hash(userTokenAddress, randomSaltGenerator);
 
             // Securing User IP Via Bcrypt
