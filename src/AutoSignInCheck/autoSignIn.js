@@ -28,7 +28,12 @@ async function autoSignIn(userName, token) {
 
         const checkUserSessionExistOrNot = await sessionsModel.find({ userName: userName })
 
-        console.log(checkUserSessionExistOrNot)
+        if (checkUserSessionExistOrNot.length === 0) {
+            return {
+                status: 204,
+                message: "Session Don't Exist"
+            }
+        }
 
         let i = 0;
         while (i < checkUserSessionExistOrNot.length) {
@@ -41,13 +46,23 @@ async function autoSignIn(userName, token) {
                     status: 204,
                     message: "Session Don't Exist"
                 }
-            } else if (decryptingToken === true) {
+            } else if (decryptingToken === true && checkUserSessionExistOrNot[i].userVerified === true) {
                 return {
                     status: 202,
                     message: "Session Exist"
                 }
+            } else if (decryptingToken === true && checkUserSessionExistOrNot[i].userVerified === false) {
+                return {
+                    status: 204,
+                    message: "Session Don't Exist"
+                }
             } else if (decryptingToken === false) {
 
+            } else {
+                return {
+                    status: 69,
+                    message: "Please Raise An Issue Request"
+                }
             }
 
             i++;

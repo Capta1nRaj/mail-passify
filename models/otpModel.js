@@ -19,6 +19,6 @@ const otpSchema = new mongoose.Schema({
     timestamps: true
 });
 
-otpSchema.index({ userName: 1 }, { unique: true }); // Creating a unique index on inviteCode
+otpSchema.index({ userName: 1 }); // Creating a index on inviteCode
 
 module.exports = mongoose.models.OTP || mongoose.model("OTP", otpSchema)

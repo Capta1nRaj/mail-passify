@@ -47,17 +47,27 @@ async function signin(userName, userPassword) {
         // Securing OTP Via Bcrypt
         const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
 
-        // Saving Details To DB
-        new otpModel({
-            userName: username,
-            OTP: bcryptOTP
-        }).save();
+        // If OTP Already Exist, Then, Replace It With New One
+        const checkIfOTPExistOrNot = await otpModel.findOne({ userName: userName })
+
+        if (checkIfOTPExistOrNot === null) {
+
+            // Saving Details To DB
+            new otpModel({
+                userName: username,
+                OTP: bcryptOTP
+            }).save();
+
+        } else if (checkIfOTPExistOrNot !== null) {
+            const updateTheOTP = await otpModel.findOneAndUpdate({ userName: userName }, { OTP: bcryptOTP })
+        }
 
         signUpOTPSend(username, findEmailIDToLogin.userEmail, userOTP)
 
         return {
             status: 200,
-            message: "Please Verify Your Account"
+            message: "Please Verify Your Account",
+            userName: username,
         }
     }
 

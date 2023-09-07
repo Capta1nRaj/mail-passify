@@ -16,7 +16,6 @@ async function temp() {
     await connect2MongoDB();
 
     const data = await accountsModel.findOne({ userName: 'rohitsubaml' })
-    console.log(data);
 
 }
 
