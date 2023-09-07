@@ -8,10 +8,10 @@ async function signUpVerify(userName, otp) {
 
     await connect2MongoDB();
 
-    const getUserOTP = await otpModel.findOne({ userName: userName })
+    const getUserDetailsAndOTP = await otpModel.findOne({ userName: userName })
 
     // Decrypting The OTP From The User
-    const decryptedOTP = await bcrypt.compare(otp, getUserOTP.OTP);
+    const decryptedOTP = await bcrypt.compare(otp, getUserDetailsAndOTP.OTP);
 
     if (decryptedOTP === false) {
         return {
@@ -20,7 +20,15 @@ async function signUpVerify(userName, otp) {
         }
     } else if (decryptedOTP === true) {
 
-        const verifyUser = await accountsModel.findOneAndUpdate({ userName: userName }, { userVerified: true })
+        // Will Verify User Account
+        const verifyUser = await accountsModel.findOneAndUpdate({ userName: userName }, { $set: { userVerified: true }, $inc: { points: 10 } }, { new: true });
+
+        // If The User Enters The Correct Referral Code, They Receive 50 Points From The Referrer And Get Added To The Referrer's List With Their Name.
+        // And Referrer Gets 10 Points.
+        const getTheUserWhomHeGotReferred = await accountsModel.findOne({ userName: getUserDetailsAndOTP.userName })
+        var updateTheReferralPoints = await accountsModel.findOneAndUpdate({ userReferralCode: getTheUserWhomHeGotReferred.userReferredBy }, { $addToSet: { userReferrals: getTheUserWhomHeGotReferred.userName }, $inc: { points: 50 } }, { new: true });
+
+        // Delete The OTP
         const deleteUserOTPDocument = await otpModel.findOneAndDelete({ userName: userName })
 
         return {

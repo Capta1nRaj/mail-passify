@@ -59,9 +59,6 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
 
         if (checkIfuserReferralCodeExistInDBOrNot === undefined) {
             referredby = "";
-        } else if (checkIfuserReferralCodeExistInDBOrNot !== undefined) {
-            // If The User Enters The Correct Referral Code, They Receive 50 Points From The Referrer And Get Added To The Referrer's List With Their Name.
-            await accountsModel.findOneAndUpdate({ userName: checkIfuserReferralCodeExistInDBOrNot.userName }, { $addToSet: { userReferrals: username }, $inc: { points: 50 } }, { new: true });
         }
 
         // Securing Password Via Bcrypt
