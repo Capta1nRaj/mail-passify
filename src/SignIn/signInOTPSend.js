@@ -3,7 +3,6 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const fs = require('fs');
-
 let userConfiJSONData = fs.readFileSync('mail-passify.json');
 let userConfig = JSON.parse(userConfiJSONData);
 

@@ -105,7 +105,7 @@ async function signin(userName, userPassword) {
             // Saving Details To DB
             new sessionsModel({
                 userName: username,
-                token: bcryptToken,
+                token: userTokenAddress,
                 userIP: bcryptUserIP,
                 OTP: bcryptOTP,
             }).save();

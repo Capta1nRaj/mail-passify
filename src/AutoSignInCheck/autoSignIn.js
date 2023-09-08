@@ -39,24 +39,24 @@ async function autoSignIn(userName, token) {
         while (i < checkUserSessionExistOrNot.length) {
 
             // Decrypting The Password From The User
-            const decryptingToken = await bcrypt.compare(token, checkUserSessionExistOrNot[i].token);
+            // const decryptingToken = await bcrypt.compare(token, checkUserSessionExistOrNot[i].token);
 
-            if (decryptingToken === false && i === checkUserSessionExistOrNot.length - 1) {
+            if (checkUserSessionExistOrNot[i].token !== token && i === checkUserSessionExistOrNot.length - 1) {
                 return {
                     status: 204,
                     message: "Session Don't Exist"
                 }
-            } else if (decryptingToken === true && checkUserSessionExistOrNot[i].userVerified === true) {
+            } else if (checkUserSessionExistOrNot[i].token === token && checkUserSessionExistOrNot[i].userVerified === true) {
                 return {
                     status: 202,
                     message: "Session Exist"
                 }
-            } else if (decryptingToken === true && checkUserSessionExistOrNot[i].userVerified === false) {
+            } else if (checkUserSessionExistOrNot[i].token === token && checkUserSessionExistOrNot[i].userVerified === false) {
                 return {
                     status: 204,
                     message: "Session Don't Exist"
                 }
-            } else if (decryptingToken === false) {
+            } else if (checkUserSessionExistOrNot[i].token !== token) {
 
             } else {
                 return {
