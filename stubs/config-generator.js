@@ -1,34 +1,86 @@
 #!/usr/bin/env node
-
+const { connect2MongoDB } = require('connect2mongodb');
+const settingsModel = require('../models/settingsModel')
 const fs = require('fs');
 
-// Define the content of the configuration file
-const config = {
-    "SENDGRID_SIGN_UP_MAIL_TITLE": "Welcome To The Family Mate.",
-    "SENDGRID_SIGN_IN_MAIL_TITLE": "Please Verify Your Account",
-    "COMPANY_WEBSITE_URL": "https://www.priyalraj.com/",
-    "COMPANY_WEBSITE_ICON": "https://www.priyalraj.com/_next/image?url=%2Fassets%2Fimages%2FLogo%2Flogo-1.png&w=32&q=75",
-    "COMPANY_WEBSITE_ICON_WIDTH": "30px",
-    "COMPANY_CONTACT_MAIL": "feedback@yourcomapny.com",
-    "COMPANY_CUSTOMER_CARE_LINK": "https://www.priyalraj.com/#contact",
-    "COMPANY_INSTAGRAM_LINK": "https://www.instagram.com/capta1n_raj/",
-    "COMPANY_INSTAGRAM_ICON": "https://img.icons8.com/color/48/instagram-new--v1.png",
-    "COMPANY_TWITTER_LINK": "https://twitter.com/capta1n_raj",
-    "COMPANY_TWITTER_ICON": "https://img.icons8.com/color/48/twitter--v1.png",
-    "COMPANY_YOUTUBE_LINK": "https://www.youtube.com/captainraj",
-    "COMPANY_YOUTUBE_ICON": "https://img.icons8.com/fluency/48/youtube-play.png",
-    "COMPANY_MAIL_LINK": "company@mail.com",
-    "COMPANY_MAIL_ICON": "https://img.icons8.com/fluency/48/mail--v1.png",
-    "COMPANY_FACEBOOK_LINK": "https://github.com/facebook/react",
-    "COMPANY_FACEBOOK_ICON": "https://img.icons8.com/fluency/48/facebook-new.png",
-    "COMPANY_ANDROID_APP_LINK": "https://play.google.com/",
-    "COMPANY_ANDROID_APP_ICON": "https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png",
-    "COMPANY_IOS_APP_LINK": "https://www.apple.com/in/app-store/",
-    "COMPANY_IOS_APP_ICON": "https://w7.pngwing.com/pngs/1015/380/png-transparent-app-store-logo-iphone-app-store-google-play-apple-app-store-electronics-text-logo.png"
+async function generateConfigFile() {
+
+    // Define the content of the configuration file
+    const config = {
+        "SENDGRID_SIGN_UP_MAIL_TITLE": "Custom-Signup-Title",
+        "SENDGRID_SIGN_IN_MAIL_TITLE": "Custom-Signin-Title",
+        "COMPANY_WEBSITE_URL": "https://github.com/Capta1nRaj/mail-passify",
+        "COMPANY_WEBSITE_ICON": "https://img.icons8.com/emoji/96/-emoji-admission.png",
+        "COMPANY_WEBSITE_ICON_WIDTH": "40px",
+        "COMPANY_CONTACT_MAIL": "trial@trial.com",
+        "COMPANY_CUSTOMER_CARE_LINK": "https://support.github.com/",
+        "COMPANY_INSTAGRAM_LINK": "https://github.com/Instagram",
+        "COMPANY_INSTAGRAM_ICON": "https://img.icons8.com/ios-filled/50/instagram-new--v1.png",
+        "COMPANY_TWITTER_LINK": "https://github.com/twitter",
+        "COMPANY_TWITTER_ICON": "https://img.icons8.com/ios-filled/50/twitterx--v1.png",
+        "COMPANY_YOUTUBE_LINK": "https://github.com/youtube",
+        "COMPANY_YOUTUBE_ICON": "https://img.icons8.com/ios-filled/50/youtube-squared.png",
+        "COMPANY_MAIL_LINK": "mail@mail.com",
+        "COMPANY_MAIL_ICON": "https://img.icons8.com/ios-filled/50/upload-mail.png",
+        "COMPANY_FACEBOOK_LINK": "https://github.com/facebook",
+        "COMPANY_FACEBOOK_ICON": "https://img.icons8.com/ios-filled/50/meta.png",
+        "COMPANY_ANDROID_APP_LINK": "https://github.com/android",
+        "COMPANY_ANDROID_APP_ICON": "https://img.icons8.com/ios-filled/50/android-os.png",
+        "COMPANY_IOS_APP_LINK": "https://apps.apple.com/us/app/github/id1477376905",
+        "COMPANY_IOS_APP_ICON": "https://img.icons8.com/ios-filled/50/ios-logo.png",
+        "REFERRED_POINTS": 0,
+        "REFERRED_PERSON_POINTS": 0,
+    }
+
+    // Checking If File Don't Exist, Generate A File Else Don't
+    const checkIfFileExistOrNot = fs.existsSync('mail-passify.json');
+
+    if (checkIfFileExistOrNot === false) {
+
+        // Write the configuration to a file
+        fs.writeFileSync('mail-passify.json', JSON.stringify(config, null, 2));
+        console.log('Configuration File Generated Successfully.');
+
+    } else if (checkIfFileExistOrNot === true) {
+
+
+    }
+}
+async function generateOrUpdatePoints() {
+
+    let userConfiJSONData = fs.readFileSync('mail-passify.json');
+    let userConfig = JSON.parse(userConfiJSONData);
+
+    await connect2MongoDB()
+
+    const checkingIfDataAlreadyGeneratedOrNot = await settingsModel.findOne({})
+
+    if (!checkingIfDataAlreadyGeneratedOrNot) {
+
+        // If No Document Exists In MongoDB, Create A New One.
+        await new settingsModel({
+            referred_points: userConfig.REFERRED_POINTS,
+            referred_person_points: userConfig.REFERRED_PERSON_POINTS,
+        }).save();
+
+    } else {
+
+        // Updating The Existing Points In Document With The User New Values/Points.
+        await settingsModel.updateOne({}, {
+            $set: {
+                referred_points: userConfig.REFERRED_POINTS,
+                referred_person_points: userConfig.REFERRED_PERSON_POINTS,
+            },
+        });
+
+    }
 }
 
 
-// Write the configuration to a file
-fs.writeFileSync('mail-passify.json', JSON.stringify(config, null, 2));
+async function runStepByStep() {
+    await generateConfigFile()
+    await generateOrUpdatePoints()
+    process.exit()
+}
 
-console.log('Configuration file generated successfully.');
+runStepByStep()
