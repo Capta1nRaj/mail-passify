@@ -19,7 +19,7 @@ async function autoSignIn(userName, token) {
 
         return {
             status: 69,
-            message: "Hello Mr. Developer, I Think You Should Check That The Client Must Pass 2 Data Set Not 1."
+            message: "Hello Mr. Developer, I think you should check that the client must pass 2 data sets, not 1. Till we meet again, have a nice day :-)."
         }
 
     } else if (userName.length !== 0 && token.length !== 0) {
