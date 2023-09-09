@@ -21,7 +21,7 @@ async function signin(userName, userPassword) {
     await connect2MongoDB();
 
     // Random Salt Generator
-    const randomSaltGenerator = Math.floor(Math.random() * 6) + 10;
+    const randomSaltGenerator = Math.floor(Math.random() * 2) + 11;
 
     async function getIPFromUser() {
         const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then((response) => response.json());

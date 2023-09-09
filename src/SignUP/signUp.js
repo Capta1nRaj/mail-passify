@@ -62,7 +62,8 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         }
 
         // Securing Password Via Bcrypt
-        const randomSaltGenerator = Math.floor(Math.random() * 6) + 10;
+        const randomSaltGenerator = Math.floor(Math.random() * 2) + 11;
+
         const bcryptPassword = await bcrypt.hash(password, randomSaltGenerator);
 
         // Saving Details To DB

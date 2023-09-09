@@ -36,40 +36,33 @@ async function autoSignIn(userName, token) {
         }
 
         let i = 0;
+
         while (i < checkUserSessionExistOrNot.length) {
 
             // Decrypting The Password From The User
             // const decryptingToken = await bcrypt.compare(token, checkUserSessionExistOrNot[i].token);
 
+            // Decrypting The User IP
+            const decryptingUserIP = await bcrypt.compare(userIP, checkUserSessionExistOrNot[i].userIP);
+
             if (checkUserSessionExistOrNot[i].token !== token && i === checkUserSessionExistOrNot.length - 1) {
+
                 return {
                     status: 204,
                     message: "Session Don't Exist"
                 }
-            } else if (checkUserSessionExistOrNot[i].token === token && checkUserSessionExistOrNot[i].userVerified === true) {
+
+            } else if (checkUserSessionExistOrNot[i].token === token && checkUserSessionExistOrNot[i].userVerified === true && decryptingUserIP === true) {
+
                 return {
                     status: 202,
                     message: "Session Exist"
                 }
-            } else if (checkUserSessionExistOrNot[i].token === token && checkUserSessionExistOrNot[i].userVerified === false) {
-                return {
-                    status: 204,
-                    message: "Session Don't Exist"
-                }
-            } else if (checkUserSessionExistOrNot[i].token !== token) {
 
-            } else {
-                return {
-                    status: 69,
-                    message: "Please Raise An Issue Request"
-                }
             }
 
             i++;
         }
-
-
-        // return checkUserSessionExistOrNot;
     }
 }
 
