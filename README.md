@@ -20,8 +20,7 @@ npm i mail-passify cookies-next
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
-   | Name                        | Type    | Usage                                  |
+3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.| Name                        | Type    | Usage                                  |
    | --------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation. |
    | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation. |
@@ -58,7 +57,7 @@ SENDGRID_EMAIL_ID = YOUR_SENDGRID_EMAIL_ID
 
 ### 1. Sign Up:-
 
-To get started, set up the sign-up module data in the Front-End first and pass it to the backend **(you can use your preferred method to send the data)**:-
+To get started, set up the sign-up module data in the Front-End first and pass it to the Back-End **(you can use your preferred method to send the data)**:-
 
 ```js
 const data = {fullName, userName, emailID, password, referralCode};
@@ -66,7 +65,7 @@ const data = {fullName, userName, emailID, password, referralCode};
 const response = await axios.post('YOUR_URL', data);
 ```
 
-Next, configure the sign-up module on the backend:-
+Next, configure the sign-up module on the Back-End:-
 
 ```js
 const { signup } = require("mail-passify");
@@ -95,7 +94,7 @@ After sending the OTP, redirect the user to the account verification page and fo
 
 ### 2. Sign Up Verify:-
 
-To start, in your front-end code, use **cookies-next** to extract the userName from cookies, as well as the **OTP** entered by the user. Then, send this data to the backend:-
+To start, in your front-end code, use **cookies-next** to extract the userName from cookies, as well as the **OTP** entered by the user. Then, send this data to the Back-End:-
 
 ```js
 import { getCookie } from 'cookies-next';
@@ -104,7 +103,7 @@ const data = {userNameCookie, OTP};
 const response = await axios.post('YOUR_URL', data);
 ```
 
-Set up the sign-up verify module in backend. Make sure to fetch userName from **cookies** as we stored it above.
+Set up the sign-up verify module in Back-End. Make sure to fetch userName from **cookies** as we stored it above.
 
 ```js
 const { signUpVerify } = require("mail-passify");
@@ -123,7 +122,7 @@ return {
 
 ### 3. Sign In:-
 
-To get started, set up the sign-in module data in the Front-End first and pass it to the backend **(you can use your preferred method to send the data)**:-
+To get started, set up the sign-in module data in the Front-End first and pass it to the Back-End **(you can use your preferred method to send the data)**:-
 
 ```js
 const data = {userName, userPassword};
@@ -131,7 +130,7 @@ const data = {userName, userPassword};
 const response = await axios.post('YOUR_URL', data);
 ```
 
-Next, configure the sign-in module on the backend:-
+Next, configure the sign-in module on the Back-End:-
 
 ```js
 const { signin } = require("mail-passify");
@@ -181,7 +180,7 @@ const setToken = setCookie('token', getTokenFromResponse);
 
 ### 4. Sign-in Verify:-
 
-As mentioned above, the user has signed in with their details, and you have redirected them to the sign-in verification page. To proceed, use the following functions in the front-end to pass the data to the backend:-
+As mentioned above, the user has signed in with their details, and you have redirected them to the sign-in verification page. To proceed, use the following functions in the front-end to pass the data to the Back-End:-
 
 ```js
 import { getCookie } from 'cookies-next';
@@ -190,7 +189,7 @@ const data = {userNameCookie, OTP}
 const response = await axios.post('YOUR_URL', data)
 ```
 
-Once the data is sent to the backend, use this method to verify the user:-
+Once the data is sent to the Back-End, use this method to verify the user:-
 
 ```js
 const { signInVerify } = require("mail-passify");
@@ -209,7 +208,7 @@ return {
 
 ### 5. Auto User Session Check:-
 
-What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `AuthSignInCheck()` function to verify if the user's session is legitimate and active. Follow these steps:
+What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `AuthSignInCheck()` function to verify if the user's session is legitimate and active. Follow these steps:-
 
 ```js
 const { autoSignIn } = require("mail-passify");
@@ -236,3 +235,47 @@ return {
 ```
 
 ### 6. Logout:-
+
+There are **2 methods** to logout the user:-
+
+1. Logout Current Session Only: The user gets logged out only from the current device.
+2. Logout All Sessions: The user gets logged out from all sessions.
+
+#### Method 1 (Current Session Only):-
+
+To begin, fetch **userName** and **token** from cookies in the Front-End, then pass them to the Back-End, similar like this:-
+
+```js
+import { getCookie } from 'cookies-next';
+const userNameCookie = getCookie('userName');
+const tokenCookie = getCookie('token');
+const data = { userNameCookie, tokenCookie };
+const response = await axios.post('YOUR_URL', data);
+```
+
+Once the data is passed to the Back-End, use the **logoutOnce** function to remove the session from MongoDB, like this:-
+
+```js
+const { logoutOnce } = require("mail-passify");
+const response = await logoutOnce(userNameCookie, tokenCookie)
+```
+
+Once the user's session is deleted, you will receive this response:-
+
+```js
+return {
+   status: 200,
+   message: "User Session Deleted.",
+};
+```
+
+After deleting the session from MongoDB, please clear the user's browser cookies via the front-end like this:-
+
+```js
+import { deleteCookie } from 'cookies-next';
+deleteCookie('userName');
+deleteCookie('token');
+```
+
+#### Method 2 (All Sessions):-
+
