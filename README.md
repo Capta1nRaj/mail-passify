@@ -6,14 +6,16 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 
 ## Features
 
-* [X] Sign-In With Two Step Verification.
-* [X] Sign-Up With Two Step Verification.
-* [X] Auto User Session Checking.
-* [X] Logout From Current Device.
-* [X] Logout From All Device.
-* [X] Referral System.
-* [ ] Lock User After Several Failed Login Attempts.
-* [ ] Unlock The Locked User Account (Custom + 24 Hours).
+- ✅ Sign-Up With Two-Step Verification.
+- ✅ Sign-In With Two-Step Verification.
+- ❌ Resend OTP.
+- ❌ Forgot Password With Two-Step Verification.
+- ✅ Auto User Session Checking.
+- ✅ Logout From Current Device.
+- ✅ Logout From All Devices.
+- ✅ Referral System.
+- ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
+- ❌ Unlock The Locked User Account (User + Auto).
 
 ## # Getting Started
 
@@ -31,7 +33,9 @@ npm i mail-passify cookies-next
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.| Name                        | Type    | Usage                                  |
+3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
+
+   | Name                        | Type    | Usage                                  |
    | --------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation. |
    | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation. |
@@ -56,6 +60,7 @@ npx mail-passify init
    | COMPANY_IOS_APP_ICON        | String  | URL of the iOS app icon.               |
    | REFERRED_POINTS             | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS      | Integer | Points awarded to the referred person. |
+
 4. Include and configure the following in your .env file:
 
 ```js
