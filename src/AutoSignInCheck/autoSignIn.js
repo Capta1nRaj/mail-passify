@@ -1,69 +1,54 @@
 const { connect2MongoDB } = require("connect2mongodb");
-
 const sessionsModel = require("../../models/sessionsModel");
-
 const bcrypt = require("bcrypt");
-
 require("dotenv").config();
 
 async function autoSignIn(userName, token) {
-
-    await connect2MongoDB()
-
-    async function getIPFromUser() {
-        const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then((response) => response.json());
-        return fetchingUserIP.ip;
-    }
+    await connect2MongoDB();
 
     if (userName.length === 0 || token.length === 0) {
-
         return {
             status: 69,
-            message: "Hello Mr. Developer, I think you should check that the client must pass 2 data sets, not 1. Till we meet again, have a nice day :-)."
-        }
+            message: "Please provide both a username and a token.",
+        };
+    }
 
-    } else if (userName.length !== 0 && token.length !== 0) {
+    const userIP = await fetchUserIP();
 
-        const userIP = await getIPFromUser();
+    const checkUserSessionExistOrNot = await sessionsModel.find({ userName });
 
-        const checkUserSessionExistOrNot = await sessionsModel.find({ userName: userName })
+    if (checkUserSessionExistOrNot.length === 0) {
+        return {
+            status: 204,
+            message: "Session doesn't exist.",
+        };
+    }
 
-        if (checkUserSessionExistOrNot.length === 0) {
-            return {
-                status: 204,
-                message: "Session Don't Exist"
-            }
-        }
+    const sessionExists = checkUserSessionExistOrNot.some(
+        (session) =>
+            session.token === token &&
+            session.userVerified === true &&
+            bcrypt.compareSync(userIP, session.userIP)
+    );
 
-        let i = 0;
-
-        while (i < checkUserSessionExistOrNot.length) {
-
-            // Decrypting The Password From The User
-            // const decryptingToken = await bcrypt.compare(token, checkUserSessionExistOrNot[i].token);
-
-            // Decrypting The User IP
-            const decryptingUserIP = await bcrypt.compare(userIP, checkUserSessionExistOrNot[i].userIP);
-
-            if (checkUserSessionExistOrNot[i].token !== token && i === checkUserSessionExistOrNot.length - 1) {
-
-                return {
-                    status: 204,
-                    message: "Session Don't Exist"
-                }
-
-            } else if (checkUserSessionExistOrNot[i].token === token && checkUserSessionExistOrNot[i].userVerified === true && decryptingUserIP === true) {
-
-                return {
-                    status: 202,
-                    message: "Session Exist"
-                }
-
-            }
-
-            i++;
-        }
+    if (sessionExists) {
+        return {
+            status: 202,
+            message: "Session exists.",
+        };
+    } else {
+        return {
+            status: 204,
+            message: "Session doesn't exist.",
+        };
     }
 }
 
-module.exports = autoSignIn
+async function fetchUserIP() {
+    const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then(
+        (response) => response.json()
+    );
+    return fetchingUserIP.ip;
+}
+
+module.exports = autoSignIn;
