@@ -4,6 +4,17 @@
 
 Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB for now.
 
+## Features
+
+* [X] Sign-In With Two Step Verification.
+* [X] Sign-Up With Two Step Verification.
+* [X] Auto User Session Checking.
+* [X] Logout From Current Device.
+* [X] Logout From All Device.
+* [X] Referral System.
+* [ ] Lock User After Several Failed Login Attempts.
+* [ ] Unlock The Locked User Account (Custom + 24 Hours).
+
 ## # Getting Started
 
 ### Installation:-
@@ -206,7 +217,7 @@ return {
 }
 ```
 
-### 5. Auto User Session Check:-
+### 5. Auto User Login Session Check:-
 
 What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `AuthSignInCheck()` function to verify if the user's session is legitimate and active. Follow these steps:-
 
@@ -269,7 +280,7 @@ return {
 };
 ```
 
-After deleting the session from MongoDB, please clear the user's browser cookies via the front-end like this:-
+After deleting the session from MongoDB, please clear the user's browser cookies via the Front-End like this:-
 
 ```js
 import { deleteCookie } from 'cookies-next';
@@ -279,3 +290,9 @@ deleteCookie('token');
 
 #### Method 2 (All Sessions):-
 
+All steps are the same as we did above in **Method 1**, just in the Back-End, you need to change the imports like this:-
+
+```js
+const { logoutAll } = require("mail-passify");
+const response = await logoutOnce(userNameCookie, tokenCookie)
+```
