@@ -4,11 +4,12 @@
 
 Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB for now.
 
-## Features
+## # Features
 
 - ✅ Sign-Up With Two-Step Verification.
 - ✅ Sign-In With Two-Step Verification.
-- ❌ Resend OTP.
+- ✅ Resend OTP.
+- ❌ OTP Limits.
 - ❌ Forgot Password With Two-Step Verification.
 - ✅ Auto User Session Checking.
 - ✅ Logout From Current Device.
@@ -16,6 +17,12 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 - ✅ Referral System.
 - ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
 - ❌ Unlock The Locked User Account (User + Auto).
+
+## # More Features To Be Added Later
+
+* Add Phone Number In Accounts Model With Verification.
+* Change/Update User Info.
+* Delete Account But Make Sure User Don't Get Referral Points Again Once He Sign Up With Any Referral Code.
 
 ## # Getting Started
 
@@ -33,9 +40,7 @@ npm i mail-passify cookies-next
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
-
-   | Name                        | Type    | Usage                                  |
+3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.| Name                        | Type    | Usage                                  |
    | --------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation. |
    | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation. |
@@ -60,7 +65,6 @@ npx mail-passify init
    | COMPANY_IOS_APP_ICON        | String  | URL of the iOS app icon.               |
    | REFERRED_POINTS             | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS      | Integer | Points awarded to the referred person. |
-
 4. Include and configure the following in your .env file:
 
 ```js
