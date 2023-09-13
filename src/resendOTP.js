@@ -13,6 +13,10 @@ require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const fs = require('fs');
+let userConfiJSONData = fs.readFileSync('mail-passify.json');
+let userConfig = JSON.parse(userConfiJSONData);
+
 const signUpOTPSend = require("./SignUP/signUpOTPSend");
 const signInOTPSend = require("./SignIn/signInOTPSend");
 
@@ -40,6 +44,13 @@ async function resendOTP(userName, token) {
 
         const findIfUserNameExistBeforeSending = await otpModel.findOne({ userName });
 
+        if (findIfUserNameExistBeforeSending.OTPCount >= userConfig.OTP_LIMITS) {
+            return {
+                status: 204,
+                message: "Max OTP Limit Reached, Please Try After 10 Minutes."
+            }
+        }
+
         if (!findIfUserNameExistBeforeSending) {
             return {
                 status: 69,
@@ -49,7 +60,7 @@ async function resendOTP(userName, token) {
 
             const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
 
-            await otpModel.findOneAndUpdate({ userName }, { OTP: bcryptOTP });
+            await otpModel.findOneAndUpdate({ userName }, { OTP: bcryptOTP, OTPCount: findIfUserNameExistBeforeSending.OTPCount + 1 }, { new: true });
 
             const findUserAndSendEmail = await accountsModel.findOne({ userName });
 
@@ -88,7 +99,21 @@ async function resendOTP(userName, token) {
 
                 const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
 
-                const updatedSession = await sessionsModel.findByIdAndUpdate(findIfUserSessionExistOrNot[sessionIndex]._id, { OTP: bcryptOTP });
+                const sessionToUpdate = findIfUserSessionExistOrNot[sessionIndex];
+
+                if (sessionToUpdate.OTPCount >= userConfig.OTP_LIMITS) {
+                    return {
+                        status: 204,
+                        message: "Max OTP Limit Reached, Please Try After 10 Minutes."
+                    }
+                }
+
+                // Update the fields within the session object
+                sessionToUpdate.OTP = bcryptOTP;
+                sessionToUpdate.OTPCount = sessionToUpdate.OTPCount + 1;
+
+                // Save the updated session to MongoDB
+                const updatedSession = await sessionToUpdate.save();
 
                 const findUserAndSendEmail = await accountsModel.findOne({ userName: userName });
 

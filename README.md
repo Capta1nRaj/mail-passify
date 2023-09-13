@@ -9,7 +9,7 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 - ✅ Sign-Up With Two-Step Verification.
 - ✅ Sign-In With Two-Step Verification.
 - ✅ Resend OTP.
-- ❌ OTP Limits.
+- ✅ OTP Limits.
 - ❌ Forgot Password With Two-Step Verification.
 - ✅ Auto User Session Checking.
 - ✅ Logout From Current Device.
@@ -40,35 +40,39 @@ npm i mail-passify cookies-next
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.| Name                        | Type    | Usage                                  |
-   | --------------------------- | ------- | -------------------------------------- |
-   | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation. |
-   | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation. |
-   | COMPANY_WEBSITE_URL         | String  | Your company's website URL.            |
-   | COMPANY_WEBSITE_ICON        | String  | URL of your company's website icon.    |
-   | COMPANY_WEBSITE_ICON_WIDTH  | String  | Width of the website icon.             |
-   | COMPANY_CONTACT_MAIL        | String  | Company's contact email address.       |
-   | COMPANY_CUSTOMER_CARE_LINK  | String  | Link for customer support.             |
-   | COMPANY_INSTAGRAM_LINK      | String  | Link to your Instagram profile.        |
-   | COMPANY_INSTAGRAM_ICON      | String  | URL of the Instagram icon.             |
-   | COMPANY_TWITTER_LINK        | String  | Link to your Twitter profile.          |
-   | COMPANY_TWITTER_ICON        | String  | URL of the Twitter icon.               |
-   | COMPANY_YOUTUBE_LINK        | String  | Link to your YouTube channel.          |
-   | COMPANY_YOUTUBE_ICON        | String  | URL of the YouTube icon.               |
-   | COMPANY_MAIL_LINK           | String  | Company's email address.               |
-   | COMPANY_MAIL_ICON           | String  | URL of the mail icon.                  |
-   | COMPANY_FACEBOOK_LINK       | String  | Link to your Facebook page.            |
-   | COMPANY_FACEBOOK_ICON       | String  | URL of the Facebook icon.              |
-   | COMPANY_ANDROID_APP_LINK    | String  | Link to your Android app.              |
-   | COMPANY_ANDROID_APP_ICON    | String  | URL of the Android app icon.           |
-   | COMPANY_IOS_APP_LINK        | String  | Link to your iOS app.                  |
-   | COMPANY_IOS_APP_ICON        | String  | URL of the iOS app icon.               |
-   | REFERRED_POINTS             | Integer | Points awarded to the referrer.        |
-   | REFERRED_PERSON_POINTS      | Integer | Points awarded to the referred person. |
+3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
+
+   | Name                        | Type    | Usage                                   |
+   | --------------------------- | ------- | --------------------------------------- |
+   | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation.  |
+   | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation.  |
+   | COMPANY_WEBSITE_URL         | String  | Your company's website URL.             |
+   | COMPANY_WEBSITE_ICON        | String  | URL of your company's website icon.     |
+   | COMPANY_WEBSITE_ICON_WIDTH  | String  | Width of the website icon.              |
+   | COMPANY_CONTACT_MAIL        | String  | Company's contact email address.        |
+   | COMPANY_CUSTOMER_CARE_LINK  | String  | Link for customer support.              |
+   | COMPANY_INSTAGRAM_LINK      | String  | Link to your Instagram profile.         |
+   | COMPANY_INSTAGRAM_ICON      | String  | URL of the Instagram icon.              |
+   | COMPANY_TWITTER_LINK        | String  | Link to your Twitter profile.           |
+   | COMPANY_TWITTER_ICON        | String  | URL of the Twitter icon.                |
+   | COMPANY_YOUTUBE_LINK        | String  | Link to your YouTube channel.           |
+   | COMPANY_YOUTUBE_ICON        | String  | URL of the YouTube icon.                |
+   | COMPANY_MAIL_LINK           | String  | Company's email address.                |
+   | COMPANY_MAIL_ICON           | String  | URL of the mail icon.                   |
+   | COMPANY_FACEBOOK_LINK       | String  | Link to your Facebook page.             |
+   | COMPANY_FACEBOOK_ICON       | String  | URL of the Facebook icon.               |
+   | COMPANY_ANDROID_APP_LINK    | String  | Link to your Android app.               |
+   | COMPANY_ANDROID_APP_ICON    | String  | URL of the Android app icon.            |
+   | COMPANY_IOS_APP_LINK        | String  | Link to your iOS app.                   |
+   | COMPANY_IOS_APP_ICON        | String  | URL of the iOS app icon.                |
+   | REFERRED_POINTS             | Integer | Points awarded to the referrer.         |
+   | REFERRED_PERSON_POINTS      | Integer | Points awarded to the referred person.  |
+   | OTP_LIMITS                  | Integer | Max Times User Can Request For OTP.     |
+
 4. Include and configure the following in your .env file:
 
 ```js
-MONGODB_URI = YOUR_MONGODB_URI (mongodb://127.0.0.1:27017/mail-passify)
+MONGODB_URI = YOUR_MONGODB_URI (mongodb://127.0.0.1:27017/DB-NAME)
 SENDGRID_API_KEY = YOUR_SENDGRID_API_KEY
 SENDGRID_EMAIL_ID = YOUR_SENDGRID_EMAIL_ID
 ```

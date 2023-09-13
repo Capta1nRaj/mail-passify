@@ -22,6 +22,10 @@ const SessionsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    OTPCount: {
+        type: Number,
+        default: 0,
+    },
     expireAt: {
         type: Date,
         default: Date.now,

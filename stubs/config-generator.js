@@ -30,6 +30,7 @@ async function generateConfigFile() {
         "COMPANY_IOS_APP_ICON": "https://img.icons8.com/ios-filled/50/ios-logo.png",
         "REFERRED_POINTS": 0,
         "REFERRED_PERSON_POINTS": 0,
+        "OTP_LIMITS": 0,
     }
 
     // Checking If File Don't Exist, Generate A File Else Don't
