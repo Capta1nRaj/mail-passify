@@ -1,8 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
+const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 const sessionsModel = require("../../models/sessionsModel");
-
-const bcrypt = require("bcrypt");
 
 async function signInVerify(userName, otp) {
 
@@ -21,7 +20,8 @@ async function signInVerify(userName, otp) {
 
         } else if (gettingOTPFromDB !== undefined) {
 
-            const decryptedOTP = await bcrypt.compare(otp, gettingOTPFromDB);
+            // Decrypting The OTP From The User
+            const decryptedOTP = (otp === decryptPassword(gettingOTPFromDB));
 
             if (decryptedOTP === false) {
 

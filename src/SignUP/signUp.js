@@ -3,8 +3,6 @@ const { connect2MongoDB } = require("connect2mongodb");
 const accountsModel = require("../../models/accountsModel");
 const otpModel = require("../../models/otpModel");
 
-const bcrypt = require("bcrypt");
-
 const randomstring = require("randomstring");
 
 require("dotenv").config();
@@ -13,6 +11,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signUpOTPSend = require("./signUpOTPSend");
+const encryptPassword = require("../PasswordHashing/encryptPassword");
 
 async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
 
@@ -61,17 +60,15 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
             referredby = "";
         }
 
-        // Securing Password Via Bcrypt
-        const randomSaltGenerator = Math.floor(Math.random() * 2) + 11;
-
-        const bcryptPassword = await bcrypt.hash(password, randomSaltGenerator);
+        // Securing Password Via Crypto
+        const encryptedPassword = encryptPassword(password);
 
         // Saving Details To DB
         new accountsModel({
             userFullName: fullname,
             userName: username,
             userEmail: userEmail,
-            userPassword: bcryptPassword,
+            userPassword: encryptedPassword,
             userReferralCode: userReferralCode,
             userReferredBy: referredby,
         }).save();
@@ -82,8 +79,8 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
             charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
         });
 
-        // Securing OTP Via Bcrypt
-        const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+        // Securing OTP Via Crypto
+        const encryptedOTP = encryptPassword(userOTP);
 
         // Sending OTP To User
         await signUpOTPSend(username, userEmail, userOTP)
@@ -91,7 +88,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         // Saving Details To DB
         new otpModel({
             userName: userName,
-            OTP: bcryptOTP
+            OTP: encryptedOTP
         }).save();
 
         return {

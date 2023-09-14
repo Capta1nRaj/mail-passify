@@ -4,8 +4,6 @@ const accountsModel = require("../../models/accountsModel");
 const otpModel = require("../../models/otpModel");
 const sessionsModel = require("../../models/sessionsModel");
 
-const bcrypt = require("bcrypt");
-
 const randomstring = require("randomstring");
 
 require("dotenv").config();
@@ -15,6 +13,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signInOTPSend = require("./signInOTPSend");
 const signUpOTPSend = require("../SignUP/signUpOTPSend");
+const encryptPassword = require("../PasswordHashing/encryptPassword");
+const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 async function signin(userName, userPassword) {
 
@@ -44,8 +44,8 @@ async function signin(userName, userPassword) {
             charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
         });
 
-        // Securing OTP Via Bcrypt
-        const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+        // Securing OTP Via Crypto
+        const encryptedOTP = encryptPassword(userOTP);
 
         // If OTP Already Exist, Then, Replace It With New One
         const checkIfOTPExistOrNot = await otpModel.findOne({ userName: userName })
@@ -55,11 +55,11 @@ async function signin(userName, userPassword) {
             // Saving Details To DB
             new otpModel({
                 userName: username,
-                OTP: bcryptOTP
+                OTP: encryptedOTP
             }).save();
 
         } else if (checkIfOTPExistOrNot !== null) {
-            const updateTheOTP = await otpModel.findOneAndUpdate({ userName: userName }, { OTP: bcryptOTP })
+            const updateTheOTP = await otpModel.findOneAndUpdate({ userName: userName }, { OTP: encryptedOTP })
         }
 
         signUpOTPSend(username, findEmailIDToLogin.userEmail, userOTP)
@@ -78,7 +78,7 @@ async function signin(userName, userPassword) {
         };
     } else if (findEmailIDToLogin !== null) {
         // Decrypting The Password From The User
-        const decryptedPassword = await bcrypt.compare(password, findEmailIDToLogin.userPassword);
+        const decryptedPassword = password === decryptPassword(findEmailIDToLogin.userPassword);
 
         if (findEmailIDToLogin.userName === username && decryptedPassword === true) {
             // Generating Token Address
@@ -93,21 +93,18 @@ async function signin(userName, userPassword) {
                 charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
             });
 
-            // Securing Token Via Bcrypt
-            const bcryptToken = await bcrypt.hash(userTokenAddress, randomSaltGenerator);
+            // Securing User IP Via Crypto
+            const encryptedUserIP = encryptPassword(userIP);
 
-            // Securing User IP Via Bcrypt
-            const bcryptUserIP = await bcrypt.hash(userIP, randomSaltGenerator);
-
-            // Securing OTP Via Bcrypt
-            const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+            // Securing OTP Via Crypto
+            const encryptedOTP = encryptPassword(userOTP);
 
             // Saving Details To DB
             new sessionsModel({
                 userName: username,
                 token: userTokenAddress,
-                userIP: bcryptUserIP,
-                OTP: bcryptOTP,
+                userIP: encryptedUserIP,
+                OTP: encryptedOTP,
             }).save();
 
             // Sending OTP To Mail

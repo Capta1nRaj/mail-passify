@@ -4,14 +4,9 @@ const accountsModel = require("../models/accountsModel");
 const sessionsModel = require("../models/sessionsModel");
 const otpModel = require("../models/otpModel");
 
-const bcrypt = require("bcrypt");
-
 const randomstring = require("randomstring");
 
 require("dotenv").config();
-
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const fs = require('fs');
 let userConfiJSONData = fs.readFileSync('mail-passify.json');
@@ -36,6 +31,9 @@ const userOTP = randomstring.generate({
 // Random Salt Generation
 const randomSaltGenerator = Math.floor(Math.random() * 2) + 11;
 
+const encryptPassword = require("./PasswordHashing/encryptPassword");
+const decryptPassword = require("./PasswordHashing/decryptPassword");
+
 async function resendOTP(userName, token) {
 
     await connect2MongoDB();
@@ -58,9 +56,9 @@ async function resendOTP(userName, token) {
             };
         } else if (findIfUserNameExistBeforeSending) {
 
-            const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+            const encryptOTP = encryptPassword(userOTP)
 
-            await otpModel.findOneAndUpdate({ userName }, { OTP: bcryptOTP, OTPCount: findIfUserNameExistBeforeSending.OTPCount + 1 }, { new: true });
+            await otpModel.findOneAndUpdate({ userName }, { OTP: encryptOTP, OTPCount: findIfUserNameExistBeforeSending.OTPCount + 1 }, { new: true });
 
             const findUserAndSendEmail = await accountsModel.findOne({ userName });
 
@@ -88,7 +86,7 @@ async function resendOTP(userName, token) {
             let sessionIndex = -1;
 
             const sessionExists = findIfUserSessionExistOrNot.some((session, index) => {
-                if (session.token === token && bcrypt.compareSync(userIP, session.userIP)) {
+                if (session.token === token && (userIP === decryptPassword(session.userIP))) {
                     sessionIndex = index;
                     return true; // To exit the loop once the condition is met.
                 }
@@ -97,7 +95,7 @@ async function resendOTP(userName, token) {
 
             if (sessionExists) {
 
-                const bcryptOTP = await bcrypt.hash(userOTP, randomSaltGenerator);
+                const encryptOTP = encryptPassword(userOTP);
 
                 const sessionToUpdate = findIfUserSessionExistOrNot[sessionIndex];
 
@@ -109,7 +107,7 @@ async function resendOTP(userName, token) {
                 }
 
                 // Update the fields within the session object
-                sessionToUpdate.OTP = bcryptOTP;
+                sessionToUpdate.OTP = encryptOTP;
                 sessionToUpdate.OTPCount = sessionToUpdate.OTPCount + 1;
 
                 // Save the updated session to MongoDB

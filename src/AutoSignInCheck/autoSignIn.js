@@ -1,6 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
 const sessionsModel = require("../../models/sessionsModel");
-const bcrypt = require("bcrypt");
+const decryptPassword = require("../PasswordHashing/decryptPassword");
+
 require("dotenv").config();
 
 async function autoSignIn(userName, token) {
@@ -28,7 +29,7 @@ async function autoSignIn(userName, token) {
         (session) =>
             session.token === token &&
             session.userVerified === true &&
-            bcrypt.compareSync(userIP, session.userIP)
+            userIP === decryptPassword(session.userIP)
     );
 
     if (sessionExists) {

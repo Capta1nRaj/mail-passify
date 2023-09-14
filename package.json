@@ -19,7 +19,6 @@
   "homepage": "https://github.com/Capta1nRaj/mail-passify#readme",
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
-    "bcrypt": "^5.1.1",
     "connect2mongodb": "^0.4.1",
     "crypto-random-string": "^5.0.0",
     "dotenv": "^16.3.1",

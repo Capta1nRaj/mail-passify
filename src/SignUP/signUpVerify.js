@@ -1,13 +1,11 @@
 const { connect2MongoDB } = require("connect2mongodb");
-const bcrypt = require("bcrypt");
 
 const accountsModel = require("../../models/accountsModel");
 const otpModel = require('../../models/otpModel')
 const settingsModel = require('../../models/settingsModel')
 
 const fs = require('fs');
-let userConfiJSONData = fs.readFileSync('mail-passify.json');
-let userConfig = JSON.parse(userConfiJSONData);
+const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 async function signUpVerify(userName, otp) {
 
@@ -16,7 +14,7 @@ async function signUpVerify(userName, otp) {
     const getUserDetailsAndOTP = await otpModel.findOne({ userName: userName })
 
     // Decrypting The OTP From The User
-    const decryptedOTP = await bcrypt.compare(otp, getUserDetailsAndOTP.OTP);
+    const decryptedOTP = (otp === decryptPassword(getUserDetailsAndOTP.OTP));
 
     if (decryptedOTP === false) {
         return {

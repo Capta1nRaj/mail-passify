@@ -1,8 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
+const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 const sessionsModel = require("../../models/sessionsModel");
-
-const bcrypt = require("bcrypt");
 
 async function logoutOnce(userName, token) {
 
@@ -20,7 +19,7 @@ async function logoutOnce(userName, token) {
     }
 
     const sessionExists = findUserSession.some((session) => {
-        const decryptingUserIP = bcrypt.compareSync(userIP, session.userIP);
+        const decryptingUserIP = userIP === decryptPassword(session.userIP);
         return session.token === token && decryptingUserIP === true;
     });
 
