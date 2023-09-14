@@ -1,6 +1,7 @@
 const { connect2MongoDB } = require("connect2mongodb");
 const sessionsModel = require("../../models/sessionsModel");
 const decryptPassword = require("../PasswordHashing/decryptPassword");
+const fetchUserIP = require("../fetchUserIP");
 
 require("dotenv").config();
 
@@ -43,13 +44,6 @@ async function autoSignIn(userName, token) {
             message: "Session doesn't exist.",
         };
     }
-}
-
-async function fetchUserIP() {
-    const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then(
-        (response) => response.json()
-    );
-    return fetchingUserIP.ip;
 }
 
 module.exports = autoSignIn;

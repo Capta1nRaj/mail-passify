@@ -4,8 +4,6 @@ const accountsModel = require("../models/accountsModel");
 const sessionsModel = require("../models/sessionsModel");
 const otpModel = require("../models/otpModel");
 
-const randomstring = require("randomstring");
-
 require("dotenv").config();
 
 const fs = require('fs');
@@ -15,21 +13,12 @@ let userConfig = JSON.parse(userConfiJSONData);
 const signUpOTPSend = require("./SignUP/signUpOTPSend");
 const signInOTPSend = require("./SignIn/signInOTPSend");
 
-async function fetchUserIP() {
-    const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then(
-        (response) => response.json()
-    );
-    return fetchingUserIP.ip;
-}
+const fetchUserIP = require("./fetchUserIP");
+
+const randomStringGenerator = require("./randomStringGenerator");
 
 // User OTP Generation
-const userOTP = randomstring.generate({
-    length: 6,
-    charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
-});
-
-// Random Salt Generation
-const randomSaltGenerator = Math.floor(Math.random() * 2) + 11;
+const userOTP = randomStringGenerator(6);
 
 const encryptPassword = require("./PasswordHashing/encryptPassword");
 const decryptPassword = require("./PasswordHashing/decryptPassword");

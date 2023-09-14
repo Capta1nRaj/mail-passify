@@ -16,33 +16,25 @@ const signUpOTPSend = require("../SignUP/signUpOTPSend");
 const encryptPassword = require("../PasswordHashing/encryptPassword");
 const decryptPassword = require("../PasswordHashing/decryptPassword");
 
+const fetchUserIP = require("../fetchUserIP");
+const randomStringGenerator = require("../randomStringGenerator");
+
 async function signin(userName, userPassword) {
 
     await connect2MongoDB();
-
-    // Random Salt Generator
-    const randomSaltGenerator = Math.floor(Math.random() * 2) + 11;
-
-    async function getIPFromUser() {
-        const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then((response) => response.json());
-        return fetchingUserIP.ip;
-    }
 
     const username = userName;
 
     const password = userPassword;
 
-    const userIP = await getIPFromUser();
+    const userIP = await fetchUserIP();
 
     const findEmailIDToLogin = await accountsModel.findOne({ userName: username });
 
     if (findEmailIDToLogin.userVerified === false) {
 
         // Generating Random OTP
-        const userOTP = randomstring.generate({
-            length: 6,
-            charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
-        });
+        const userOTP = randomStringGenerator(6)
 
         // Securing OTP Via Crypto
         const encryptedOTP = encryptPassword(userOTP);
@@ -82,16 +74,10 @@ async function signin(userName, userPassword) {
 
         if (findEmailIDToLogin.userName === username && decryptedPassword === true) {
             // Generating Token Address
-            const userTokenAddress = randomstring.generate({
-                length: 128,
-                charset: ["abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=", "-"],
-            });
+            const userTokenAddress = randomStringGenerator(128);
 
             // Generating Random OTP
-            const userOTP = randomstring.generate({
-                length: 6,
-                charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
-            });
+            const userOTP = randomStringGenerator(6);
 
             // Securing User IP Via Crypto
             const encryptedUserIP = encryptPassword(userIP);

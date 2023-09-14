@@ -12,6 +12,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signUpOTPSend = require("./signUpOTPSend");
 const encryptPassword = require("../PasswordHashing/encryptPassword");
+const randomStringGenerator = require("../randomStringGenerator");
 
 async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
 
@@ -74,11 +75,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         }).save();
 
         // Generating Random OTP
-        const userOTP = randomstring.generate({
-            length: 6,
-            charset: ["abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"],
-        });
-
+        const userOTP = randomStringGenerator(6);
         // Securing OTP Via Crypto
         const encryptedOTP = encryptPassword(userOTP);
 
@@ -101,10 +98,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
     // Generating A Unique Referral Code For User & Checking That If It's Exist In DB Or Not
     // Once It Get's An Unique UserReferralCode, It Will Save The User Referral Code To DB
     async function generatingUserReferralCode() {
-        const userReferralCode = randomstring.generate({
-            length: 6,
-            charset: ["abcdefghijklmnopqrstuvwxyz0123456789"],
-        });
+        const userReferralCode = randomStringGenerator(6);
 
         // Checking If UserReferralCode Exist In DB Or Not
         const checkIfuserReferralCodeExistInDBOrNot = await accountsModel.findOne({ userReferralCode: userReferralCode });

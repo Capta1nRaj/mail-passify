@@ -3,11 +3,13 @@ const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 const sessionsModel = require("../../models/sessionsModel");
 
+const fetchUserIP = require("../fetchUserIP");
+
 async function logoutAll(userName, token) {
 
     await connect2MongoDB();
 
-    const userIP = await getIPFromUser();
+    const userIP = await fetchUserIP();
 
     const findUserSession = await sessionsModel.find({ userName: userName });
 
@@ -36,13 +38,6 @@ async function logoutAll(userName, token) {
         message: "Data Not Valid.",
     };
 
-}
-
-async function getIPFromUser() {
-    const fetchingUserIP = await fetch("https://api.ipify.org/?format=json").then((response) =>
-        response.json()
-    );
-    return fetchingUserIP.ip;
 }
 
 module.exports = logoutAll;
