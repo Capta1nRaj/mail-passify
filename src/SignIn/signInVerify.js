@@ -29,8 +29,6 @@ async function signInVerify(userName, otp) {
                     message: "Wrong OTP"
                 }
 
-            } else if (decryptedOTP === false) {
-
             } else if (decryptedOTP === true) {
 
                 const gettingUserIDToUpdate = getUserOTPViaSession[i]._id;

@@ -17,33 +17,26 @@ async function autoSignIn(userName, token) {
 
     const userIP = await fetchUserIP();
 
-    const checkUserSessionExistOrNot = await sessionsModel.find({ userName });
-    if (checkUserSessionExistOrNot.length === 0) {
-        return {
-            status: 204,
-            message: "Session doesn't exist.",
-        };
-    }
+    const session = await sessionsModel.findOne({
+        userName,
+        userVerified: true,
+        token,
+    });
 
-
-    const sessionExists = await Promise.all(checkUserSessionExistOrNot.map(async (session) => {
+    if (session) {
         const userIPDecrypted = await decryptPassword(session.userIP);
-        return (session.userVerified === true) && (session.token === token) && (userIP === userIPDecrypted);
-    }));
-
-    const result = sessionExists.some((value) => value === true);
-
-    if (result) {
-        return {
-            status: 202,
-            message: "Session exists.",
-        };
-    } else {
-        return {
-            status: 204,
-            message: "Session doesn't exist.",
-        };
+        if (userIP === userIPDecrypted) {
+            return {
+                status: 202,
+                message: "Session exists.",
+            };
+        }
     }
+
+    return {
+        status: 204,
+        message: "Session doesn't exist.",
+    };
 }
 
 module.exports = autoSignIn;
