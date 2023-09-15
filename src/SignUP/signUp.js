@@ -56,31 +56,30 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
     } else if (findIfUserNameAlreadyExistInDBOrNot === null && findIfEmailIDAlreadyExistInDBOrNot === null && checkIfuserReferralCodeExistInDBOrNot !== null) {
         // User Unique Referral Code
         const userReferralCode = await generatingUserReferralCode();
-
         if (checkIfuserReferralCodeExistInDBOrNot === undefined) {
             referredby = "";
         }
 
         // Securing Password Via Crypto
-        const encryptedPassword = encryptPassword(password);
+        const encryptedPassword = await encryptPassword(password);
 
         // Saving Details To DB
         new accountsModel({
             userFullName: fullname,
             userName: username,
-            userEmail: userEmail,
+            userEmail: email,
             userPassword: encryptedPassword,
             userReferralCode: userReferralCode,
             userReferredBy: referredby,
         }).save();
 
         // Generating Random OTP
-        const userOTP = randomStringGenerator(6);
+        const userOTP = await randomStringGenerator(6);
         // Securing OTP Via Crypto
-        const encryptedOTP = encryptPassword(userOTP);
+        const encryptedOTP = await encryptPassword(userOTP);
 
         // Sending OTP To User
-        await signUpOTPSend(username, userEmail, userOTP)
+        await signUpOTPSend(username, email, userOTP)
 
         // Saving Details To DB
         new otpModel({
@@ -98,7 +97,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
     // Generating A Unique Referral Code For User & Checking That If It's Exist In DB Or Not
     // Once It Get's An Unique UserReferralCode, It Will Save The User Referral Code To DB
     async function generatingUserReferralCode() {
-        const userReferralCode = randomStringGenerator(6);
+        const userReferralCode = await randomStringGenerator(6);
 
         // Checking If UserReferralCode Exist In DB Or Not
         const checkIfuserReferralCodeExistInDBOrNot = await accountsModel.findOne({ userReferralCode: userReferralCode });

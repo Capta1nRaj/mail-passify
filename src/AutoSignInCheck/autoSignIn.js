@@ -27,10 +27,10 @@ async function autoSignIn(userName, token) {
     }
 
     const sessionExists = checkUserSessionExistOrNot.some(
-        (session) =>
+        async (session) =>
             session.token === token &&
             session.userVerified === true &&
-            userIP === decryptPassword(session.userIP)
+            userIP === await decryptPassword(session.userIP)
     );
 
     if (sessionExists) {

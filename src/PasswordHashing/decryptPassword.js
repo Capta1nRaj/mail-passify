@@ -7,7 +7,7 @@ var encryptionMethod = 'AES-256-CBC';
 var key = crypto.createHash('sha512').update(secret_key, 'utf-8').digest('hex').slice(0, 32);
 var iv = crypto.createHash('sha512').update(secret_iv, 'utf-8').digest('hex').slice(0, 16);
 
-function decryptPassword(password) {
+async function decryptPassword(password) {
     try {
 
         const buff = Buffer.from(password, 'base64');

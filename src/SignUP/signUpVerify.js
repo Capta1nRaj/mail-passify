@@ -14,7 +14,7 @@ async function signUpVerify(userName, otp) {
     const getUserDetailsAndOTP = await otpModel.findOne({ userName: userName })
 
     // Decrypting The OTP From The User
-    const decryptedOTP = (otp === decryptPassword(getUserDetailsAndOTP.OTP));
+    const decryptedOTP = (otp === await decryptPassword(getUserDetailsAndOTP.OTP));
 
     if (decryptedOTP === false) {
         return {

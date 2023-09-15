@@ -24,9 +24,7 @@ async function signin(userName, userPassword) {
     await connect2MongoDB();
 
     const username = userName;
-
     const password = userPassword;
-
     const userIP = await fetchUserIP();
 
     const findEmailIDToLogin = await accountsModel.findOne({ userName: username });
@@ -34,10 +32,10 @@ async function signin(userName, userPassword) {
     if (findEmailIDToLogin.userVerified === false) {
 
         // Generating Random OTP
-        const userOTP = randomStringGenerator(6)
+        const userOTP = await randomStringGenerator(6)
 
         // Securing OTP Via Crypto
-        const encryptedOTP = encryptPassword(userOTP);
+        const encryptedOTP = await encryptPassword(userOTP);
 
         // If OTP Already Exist, Then, Replace It With New One
         const checkIfOTPExistOrNot = await otpModel.findOne({ userName: userName })
@@ -70,20 +68,20 @@ async function signin(userName, userPassword) {
         };
     } else if (findEmailIDToLogin !== null) {
         // Decrypting The Password From The User
-        const decryptedPassword = password === decryptPassword(findEmailIDToLogin.userPassword);
+        const decryptedPassword = password === await decryptPassword(findEmailIDToLogin.userPassword);
 
         if (findEmailIDToLogin.userName === username && decryptedPassword === true) {
             // Generating Token Address
-            const userTokenAddress = randomStringGenerator(128);
+            const userTokenAddress = await randomStringGenerator(128);
 
             // Generating Random OTP
-            const userOTP = randomStringGenerator(6);
+            const userOTP = await randomStringGenerator(6);
 
             // Securing User IP Via Crypto
-            const encryptedUserIP = encryptPassword(userIP);
+            const encryptedUserIP = await encryptPassword(userIP);
 
             // Securing OTP Via Crypto
-            const encryptedOTP = encryptPassword(userOTP);
+            const encryptedOTP = await encryptPassword(userOTP);
 
             // Saving Details To DB
             new sessionsModel({

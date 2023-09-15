@@ -21,7 +21,7 @@ async function signInVerify(userName, otp) {
         } else if (gettingOTPFromDB !== undefined) {
 
             // Decrypting The OTP From The User
-            const decryptedOTP = (otp === decryptPassword(gettingOTPFromDB));
+            const decryptedOTP = (otp === await decryptPassword(gettingOTPFromDB));
 
             if (decryptedOTP === false) {
 
