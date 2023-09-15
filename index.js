@@ -1,11 +1,9 @@
 // Sign-Up User Imports
 const signup = require("./src/SignUP/signUp");
-const signUpOTPSend = require("./src/SignUP/signUpOTPSend");
 const signUpVerify = require("./src/SignUP/signUpVerify");
 
 // Sign-In User Imports
 const signin = require("./src/SignIn/signIn");
-const signInOTPSend = require("./src/SignIn/signInOTPSend");
 const signInVerify = require("./src/SignIn/signInVerify");
 
 // Auto Sign In Session Check Imports
@@ -20,4 +18,4 @@ const resendOTP = require("./src/resendOTP");
 const encryptPassword = require("./src/PasswordHashing/encryptPassword");
 const decryptPassword = require("./src/PasswordHashing/decryptPassword");
 
-module.exports = { signin, signInOTPSend, signInVerify, signup, signUpVerify, signUpOTPSend, autoSignIn, logoutOnce, logoutAll, resendOTP, encryptPassword, decryptPassword };
+module.exports = { signin, signInVerify, signup, signUpVerify, autoSignIn, logoutOnce, logoutAll, resendOTP, encryptPassword, decryptPassword };

@@ -9,6 +9,7 @@ async function generateConfigFile() {
     const config = {
         "SENDGRID_SIGN_UP_MAIL_TITLE": "Custom-Signup-Title",
         "SENDGRID_SIGN_IN_MAIL_TITLE": "Custom-Signin-Title",
+        "SENDGRID_FORGOT_PASSWORD_MAIL_TITLE": "Custom-Forgot-Password-Title",
         "COMPANY_WEBSITE_URL": "https://github.com/Capta1nRaj/mail-passify",
         "COMPANY_WEBSITE_ICON": "https://img.icons8.com/emoji/96/-emoji-admission.png",
         "COMPANY_WEBSITE_ICON_WIDTH": "40px",

@@ -4,20 +4,17 @@ const accountsModel = require("../../models/accountsModel");
 const otpModel = require("../../models/otpModel");
 const sessionsModel = require("../../models/sessionsModel");
 
-const randomstring = require("randomstring");
-
 require("dotenv").config();
 
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const signInOTPSend = require("./signInOTPSend");
-const signUpOTPSend = require("../SignUP/signUpOTPSend");
 const encryptPassword = require("../PasswordHashing/encryptPassword");
 const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 const fetchUserIP = require("../fetchUserIP");
 const randomStringGenerator = require("../randomStringGenerator");
+const sendOTPToUser = require("../sendOTPToUser");
 
 async function signin(userName, userPassword) {
 
@@ -52,7 +49,7 @@ async function signin(userName, userPassword) {
             const updateTheOTP = await otpModel.findOneAndUpdate({ userName: userName }, { OTP: encryptedOTP })
         }
 
-        signUpOTPSend(username, findEmailIDToLogin.userEmail, userOTP)
+        await sendOTPToUser(username, findEmailIDToLogin.userEmail, userOTP, 'signUp');
 
         return {
             status: 200,
@@ -92,7 +89,7 @@ async function signin(userName, userPassword) {
             }).save();
 
             // Sending OTP To Mail
-            await signInOTPSend(username, findEmailIDToLogin.userEmail, userOTP);
+            await sendOTPToUser(username, findEmailIDToLogin.userEmail, userOTP, 'signIn');
 
             return {
                 status: 200,

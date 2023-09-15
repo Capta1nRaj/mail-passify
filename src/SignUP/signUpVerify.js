@@ -17,10 +17,7 @@ async function signUpVerify(userName, otp) {
     const decryptedOTP = (otp === await decryptPassword(getUserDetailsAndOTP.OTP));
 
     if (decryptedOTP === false) {
-        return {
-            status: 204,
-            message: "Wrong OTP"
-        }
+
     } else if (decryptedOTP === true) {
 
         const getPointsValues = await settingsModel.findOne({})

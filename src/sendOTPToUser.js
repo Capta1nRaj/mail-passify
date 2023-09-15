@@ -6,12 +6,22 @@ const fs = require('fs');
 let userConfiJSONData = fs.readFileSync('mail-passify.json');
 let userConfig = JSON.parse(userConfiJSONData);
 
-async function signUpOTPSend(userName, userEmail, otp) {
+async function sendOTPToUser(userName, userEmail, otp, functionPerformed) {
+
+  let emailTitle;
+
+  if (functionPerformed === 'signUp') {
+    emailTitle = userConfig.SENDGRID_SIGN_UP_MAIL_TITLE;
+  } else if (functionPerformed === 'signIn') {
+    emailTitle = userConfig.SENDGRID_SIGN_IN_MAIL_TITLE;
+  } else if (functionPerformed === 'forgotPassword') {
+    emailTitle = userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE;
+  }
 
   const msg = {
     to: userEmail,
     from: process.env.SENDGRID_EMAIL_ID,
-    subject: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
+    subject: emailTitle,
     html: `
         <div style="width: 100%; margin: auto; font-size: 14px">
           <span style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; width: 0"></span>
@@ -86,4 +96,4 @@ async function signUpOTPSend(userName, userEmail, otp) {
   sgMail.send(msg);
 }
 
-module.exports = signUpOTPSend
+module.exports = sendOTPToUser

@@ -15,7 +15,6 @@ async function signInVerify(userName, otp) {
 
         const gettingOTPFromDB = getUserOTPViaSession[i].OTP;
 
-
         if (gettingOTPFromDB === undefined) {
 
         } else if (gettingOTPFromDB !== undefined) {
@@ -23,14 +22,14 @@ async function signInVerify(userName, otp) {
             // Decrypting The OTP From The User
             const decryptedOTP = (otp === await decryptPassword(gettingOTPFromDB));
 
-            if (decryptedOTP === false) {
-
-            } else if (decryptedOTP === false && i === getUserOTPViaSession.length) {
+            if (decryptedOTP === false && i === getUserOTPViaSession.length) {
 
                 return {
                     status: 204,
                     message: "Wrong OTP"
                 }
+
+            } else if (decryptedOTP === false) {
 
             } else if (decryptedOTP === true) {
 
@@ -39,7 +38,7 @@ async function signInVerify(userName, otp) {
                 const verifyUser = await sessionsModel.findOneAndUpdate({ _id: gettingUserIDToUpdate }, { userVerified: true })
 
                 // This Will Update userVerified To True & Update ExpireAt After 10 Days
-                const updateSession = await sessionsModel.findOneAndUpdate({ _id: gettingUserIDToUpdate }, { $unset: { OTP: 1 }, $set: { userVerified: true, expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } });
+                const updateSession = await sessionsModel.findOneAndUpdate({ _id: gettingUserIDToUpdate }, { $unset: { OTP: 1, OTPCount: 1 }, $set: { userVerified: true, expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } });
 
                 return {
                     status: 200,

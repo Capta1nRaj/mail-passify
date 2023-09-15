@@ -18,7 +18,6 @@ async function autoSignIn(userName, token) {
     const userIP = await fetchUserIP();
 
     const checkUserSessionExistOrNot = await sessionsModel.find({ userName });
-
     if (checkUserSessionExistOrNot.length === 0) {
         return {
             status: 204,
@@ -26,14 +25,15 @@ async function autoSignIn(userName, token) {
         };
     }
 
-    const sessionExists = checkUserSessionExistOrNot.some(
-        async (session) =>
-            session.token === token &&
-            session.userVerified === true &&
-            userIP === await decryptPassword(session.userIP)
-    );
 
-    if (sessionExists) {
+    const sessionExists = await Promise.all(checkUserSessionExistOrNot.map(async (session) => {
+        const userIPDecrypted = await decryptPassword(session.userIP);
+        return (session.userVerified === true) && (session.token === token) && (userIP === userIPDecrypted);
+    }));
+
+    const result = sessionExists.some((value) => value === true);
+
+    if (result) {
         return {
             status: 202,
             message: "Session exists.",

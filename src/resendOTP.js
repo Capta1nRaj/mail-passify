@@ -10,20 +10,20 @@ const fs = require('fs');
 let userConfiJSONData = fs.readFileSync('mail-passify.json');
 let userConfig = JSON.parse(userConfiJSONData);
 
-const signUpOTPSend = require("./SignUP/signUpOTPSend");
-const signInOTPSend = require("./SignIn/signInOTPSend");
+const sendOTPToUser = require("./sendOTPToUser");
 
 const fetchUserIP = require("./fetchUserIP");
 
 const randomStringGenerator = require("./randomStringGenerator");
 
-// User OTP Generation
-const userOTP = randomStringGenerator(6);
-
 const encryptPassword = require("./PasswordHashing/encryptPassword");
 const decryptPassword = require("./PasswordHashing/decryptPassword");
 
 async function resendOTP(userName, token) {
+
+    // User OTP Generation
+    const userOTP = await randomStringGenerator(6);
+
 
     await connect2MongoDB();
 
@@ -45,13 +45,13 @@ async function resendOTP(userName, token) {
             };
         } else if (findIfUserNameExistBeforeSending) {
 
-            const encryptOTP = encryptPassword(userOTP)
+            const encryptOTP = await encryptPassword(userOTP)
 
             await otpModel.findOneAndUpdate({ userName }, { OTP: encryptOTP, OTPCount: findIfUserNameExistBeforeSending.OTPCount + 1 }, { new: true });
 
             const findUserAndSendEmail = await accountsModel.findOne({ userName });
 
-            await signUpOTPSend(userName, findUserAndSendEmail.userEmail, userOTP);
+            await sendOTPToUser(userName, findUserAndSendEmail.userEmail, userOTP, 'signUp');
 
             return {
                 status: 201,
@@ -74,19 +74,20 @@ async function resendOTP(userName, token) {
 
             let sessionIndex = -1;
 
-            const sessionExists = findIfUserSessionExistOrNot.some((session, index) => {
-                if (session.token === token && (userIP === decryptPassword(session.userIP))) {
+
+            const sessionExists = await Promise.all(findIfUserSessionExistOrNot.map(async (session, index) => {
+                if (session.token === token && (userIP === await decryptPassword(session.userIP))) {
                     sessionIndex = index;
-                    return true; // To exit the loop once the condition is met.
+                    return true;
                 }
                 return false;
-            });
+            }));
 
             if (sessionExists) {
 
-                const encryptOTP = encryptPassword(userOTP);
+                const encryptOTP = await encryptPassword(userOTP);
 
-                const sessionToUpdate = findIfUserSessionExistOrNot[sessionIndex];
+                const sessionToUpdate = await findIfUserSessionExistOrNot[sessionIndex];
 
                 if (sessionToUpdate.OTPCount >= userConfig.OTP_LIMITS) {
                     return {
@@ -94,6 +95,8 @@ async function resendOTP(userName, token) {
                         message: "Max OTP Limit Reached, Please Try After 10 Minutes."
                     }
                 }
+
+
 
                 // Update the fields within the session object
                 sessionToUpdate.OTP = encryptOTP;
@@ -104,7 +107,7 @@ async function resendOTP(userName, token) {
 
                 const findUserAndSendEmail = await accountsModel.findOne({ userName: userName });
 
-                await signInOTPSend(userName, findUserAndSendEmail.userEmail, userOTP);
+                await sendOTPToUser(userName, findUserAndSendEmail.userEmail, userOTP, 'signIn');
 
                 return {
                     status: 201,

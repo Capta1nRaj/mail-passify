@@ -10,9 +10,9 @@ require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const signUpOTPSend = require("./signUpOTPSend");
 const encryptPassword = require("../PasswordHashing/encryptPassword");
 const randomStringGenerator = require("../randomStringGenerator");
+const sendOTPToUser = require("../sendOTPToUser");
 
 async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
 
@@ -79,7 +79,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         const encryptedOTP = await encryptPassword(userOTP);
 
         // Sending OTP To User
-        await signUpOTPSend(username, email, userOTP)
+        await sendOTPToUser(username, email, userOTP, 'signUp')
 
         // Saving Details To DB
         new otpModel({
