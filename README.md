@@ -10,7 +10,7 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 - ✅ Sign-In With Two-Step Verification.
 - ✅ Resend OTP.
 - ✅ OTP Limits.
-- ❌ Forgot Password With Two-Step Verification.
+- ✅ Forgot Password With Two-Step Verification.
 - ✅ Auto User Session Checking.
 - ✅ Logout From Current Device.
 - ✅ Logout From All Devices.
@@ -42,32 +42,33 @@ npx mail-passify init
 
 3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
 
-   | Name                        | Type    | Usage                                   |
-   | --------------------------- | ------- | --------------------------------------- |
-   | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation.  |
-   | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation.  |
-   | COMPANY_WEBSITE_URL         | String  | Your company's website URL.             |
-   | COMPANY_WEBSITE_ICON        | String  | URL of your company's website icon.     |
-   | COMPANY_WEBSITE_ICON_WIDTH  | String  | Width of the website icon.              |
-   | COMPANY_CONTACT_MAIL        | String  | Company's contact email address.        |
-   | COMPANY_CUSTOMER_CARE_LINK  | String  | Link for customer support.              |
-   | COMPANY_INSTAGRAM_LINK      | String  | Link to your Instagram profile.         |
-   | COMPANY_INSTAGRAM_ICON      | String  | URL of the Instagram icon.              |
-   | COMPANY_TWITTER_LINK        | String  | Link to your Twitter profile.           |
-   | COMPANY_TWITTER_ICON        | String  | URL of the Twitter icon.                |
-   | COMPANY_YOUTUBE_LINK        | String  | Link to your YouTube channel.           |
-   | COMPANY_YOUTUBE_ICON        | String  | URL of the YouTube icon.                |
-   | COMPANY_MAIL_LINK           | String  | Company's email address.                |
-   | COMPANY_MAIL_ICON           | String  | URL of the mail icon.                   |
-   | COMPANY_FACEBOOK_LINK       | String  | Link to your Facebook page.             |
-   | COMPANY_FACEBOOK_ICON       | String  | URL of the Facebook icon.               |
-   | COMPANY_ANDROID_APP_LINK    | String  | Link to your Android app.               |
-   | COMPANY_ANDROID_APP_ICON    | String  | URL of the Android app icon.            |
-   | COMPANY_IOS_APP_LINK        | String  | Link to your iOS app.                   |
-   | COMPANY_IOS_APP_ICON        | String  | URL of the iOS app icon.                |
-   | REFERRED_POINTS             | Integer | Points awarded to the referrer.         |
-   | REFERRED_PERSON_POINTS      | Integer | Points awarded to the referred person.  |
-   | OTP_LIMITS                  | Integer | Max Times User Can Request For OTP.     |
+   | Name                        | Type    | Usage                                  |
+   | --------------------------- | ------- | -------------------------------------- |
+   | SENDGRID_SIGN_UP_MAIL_TITLE | String  | Custom title for sign-up confirmation. |
+   | SENDGRID_SIGN_IN_MAIL_TITLE | String  | Custom title for sign-in confirmation. |
+   | SENDGRID_FORGOT_PASSWORD_MAIL_TITLE | String  | Custom-Forgot-Password-Title.  |
+   | COMPANY_WEBSITE_URL         | String  | Your company's website URL.            |
+   | COMPANY_WEBSITE_ICON        | String  | URL of your company's website icon.    |
+   | COMPANY_WEBSITE_ICON_WIDTH  | String  | Width of the website icon.             |
+   | COMPANY_CONTACT_MAIL        | String  | Company's contact email address.       |
+   | COMPANY_CUSTOMER_CARE_LINK  | String  | Link for customer support.             |
+   | COMPANY_INSTAGRAM_LINK      | String  | Link to your Instagram profile.        |
+   | COMPANY_INSTAGRAM_ICON      | String  | URL of the Instagram icon.             |
+   | COMPANY_TWITTER_LINK        | String  | Link to your Twitter profile.          |
+   | COMPANY_TWITTER_ICON        | String  | URL of the Twitter icon.               |
+   | COMPANY_YOUTUBE_LINK        | String  | Link to your YouTube channel.          |
+   | COMPANY_YOUTUBE_ICON        | String  | URL of the YouTube icon.               |
+   | COMPANY_MAIL_LINK           | String  | Company's email address.               |
+   | COMPANY_MAIL_ICON           | String  | URL of the mail icon.                  |
+   | COMPANY_FACEBOOK_LINK       | String  | Link to your Facebook page.            |
+   | COMPANY_FACEBOOK_ICON       | String  | URL of the Facebook icon.              |
+   | COMPANY_ANDROID_APP_LINK    | String  | Link to your Android app.              |
+   | COMPANY_ANDROID_APP_ICON    | String  | URL of the Android app icon.           |
+   | COMPANY_IOS_APP_LINK        | String  | Link to your iOS app.                  |
+   | COMPANY_IOS_APP_ICON        | String  | URL of the iOS app icon.               |
+   | REFERRED_POINTS             | Integer | Points awarded to the referrer.        |
+   | REFERRED_PERSON_POINTS      | Integer | Points awarded to the referred person. |
+   | OTP_LIMITS                  | Integer | Max Times User Can Request For OTP.    |
 
 4. Include and configure the following in your .env file:
 
@@ -308,4 +309,59 @@ All steps are the same as we did above in **Method 1**, just in the Back-End, yo
 ```js
 const { logoutAll } = require("mail-passify");
 const response = await logoutOnce(userNameCookie, tokenCookie)
+```
+
+### 7. Forgot Password:-
+
+To begin, get **userName** in the Front-End, then pass them to the Back-End, similar like this:-
+
+```js
+const data = { userName }
+const response = await axios.post('YOUR_URL', data)
+```
+
+Once the data is passed to the Back-End, use the **forgotPassword** function to reset/update the password in MongoDB like this:-
+
+```js
+const { forgotPassword } = require("mail-passify");
+const response = await forgotPassword(userName);
+```
+
+After this, it will first verify whether the user exists in MongoDB or not. If the user exists, you will receive this response:-
+
+```js
+return {
+   status: 200,
+   message: "OTP Sent To Mail",
+   userName: userName,
+};
+```
+
+Kindly save the userName to cookies as we did above. After that, pass your OTP and newPassword to the Back-End via the Front-End similar like this:-
+
+```js
+const userNameCookie = getCookie('userName');
+const data = { userNameCookie, OTP, newPassword }
+const response = await axios.post('YOUR_URL', data)
+```
+
+Once the data is received in the back-end, please perform the following actions:-
+
+```js
+const response = await forgotPassword(userNameCookie, OTP, newPassword)
+```
+
+Now, firstly, we will check if the OTP is correct or not. If the OTP is correct, we will update the new password. Once the password is updated, you will receive a response like this:-
+
+```js
+return {
+   status: 200,
+   message: "Password Updated."
+}
+```
+
+To resend OTP for the **forgot password** functionality, use these values:-
+
+```js
+const response = await resendOTP(userNameCookie, 'forgotPassword')
 ```

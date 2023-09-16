@@ -75,6 +75,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
 
         // Generating Random OTP
         const userOTP = await randomStringGenerator(6);
+
         // Securing OTP Via Crypto
         const encryptedOTP = await encryptPassword(userOTP);
 

@@ -17,5 +17,6 @@ const logoutAll = require("./src/logoutUser/logoutAll");
 const resendOTP = require("./src/resendOTP");
 const encryptPassword = require("./src/PasswordHashing/encryptPassword");
 const decryptPassword = require("./src/PasswordHashing/decryptPassword");
+const forgotPassword = require("./src/forgotPassword");
 
-module.exports = { signin, signInVerify, signup, signUpVerify, autoSignIn, logoutOnce, logoutAll, resendOTP, encryptPassword, decryptPassword };
+module.exports = { signin, signInVerify, signup, signUpVerify, autoSignIn, logoutOnce, logoutAll, resendOTP, encryptPassword, decryptPassword, forgotPassword };

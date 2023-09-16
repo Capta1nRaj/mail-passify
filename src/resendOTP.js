@@ -12,11 +12,14 @@ const decryptPassword = require("./PasswordHashing/decryptPassword");
 
 require("dotenv").config();
 
-async function resendOTP(userName, token) {
+async function resendOTP(userName, functionPerformed, token) {
+
     await connect2MongoDB();
+
     const userOTP = await randomStringGenerator(6);
 
-    if (token === undefined) {
+    if (functionPerformed === 'newUserVerification') {
+
         const findIfUserNameExistBeforeSending = await otpModel.findOne({ userName });
 
         if (findIfUserNameExistBeforeSending?.OTPCount >= userConfig.OTP_LIMITS) {
@@ -45,7 +48,9 @@ async function resendOTP(userName, token) {
             status: 201,
             message: "OTP Resent To The User.",
         };
-    } else if (token !== undefined) {
+
+    } else if (functionPerformed === 'oldUserVerification') {
+
         const userIP = await fetchUserIP();
         const findIfUserSessionExistOrNot = await sessionsModel.find({ userName });
 
@@ -60,17 +65,23 @@ async function resendOTP(userName, token) {
         let sessionIndex = -1;
 
         for (let index = 0; index < findIfUserSessionExistOrNot.length; index++) {
+
             const session = findIfUserSessionExistOrNot[index];
+
             const userIPDecrypted = await decryptPassword(session.userIP);
+
             if (!session.userVerified && session.token === token && userIP === userIPDecrypted) {
                 sessionExists = true;
                 sessionIndex = index;
                 break;
             }
+
         }
 
         if (sessionExists) {
+
             const encryptOTP = await encryptPassword(userOTP);
+
             const sessionToUpdate = findIfUserSessionExistOrNot[sessionIndex];
 
             if (sessionToUpdate?.OTPCount >= userConfig.OTP_LIMITS) {
@@ -81,6 +92,7 @@ async function resendOTP(userName, token) {
             }
 
             sessionToUpdate.OTP = encryptOTP;
+
             sessionToUpdate.OTPCount++;
 
             await sessionToUpdate.save();
@@ -92,12 +104,42 @@ async function resendOTP(userName, token) {
                 status: 201,
                 message: "OTP Resent To The User.",
             };
+
         } else {
+
             return {
                 status: 69,
                 message: "Is this Mr. Developer or someone trying to... uh?",
             };
+
         }
+
+    } else if (functionPerformed === 'forgotPassword') {
+
+        const findIfUserNameExistBeforeSending = await otpModel.findOne({ userName });
+
+        if (findIfUserNameExistBeforeSending?.OTPCount >= userConfig.OTP_LIMITS) {
+
+            return {
+                status: 204,
+                message: "Max OTP Limit Reached, Please Try After 10 Minutes."
+            };
+
+        }
+
+        const encryptOTP = await encryptPassword(userOTP);
+
+        await otpModel.findOneAndUpdate({ userName }, { OTP: encryptOTP, $inc: { OTPCount: 1 } });
+
+        const findUserAndSendEmail = await accountsModel.findOne({ userName });
+
+        await sendOTPToUser(userName, findUserAndSendEmail?.userEmail, userOTP, 'forgotPassword');
+
+        return {
+            status: 201,
+            message: "OTP Resent To The User.",
+        };
+
     }
 }
 
