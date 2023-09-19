@@ -19,8 +19,8 @@ async function logoutOnce(userName, token) {
         };
     }
 
-    const sessionExists = findUserSession.some((session) => {
-        const decryptingUserIP = userIP === decryptPassword(session.userIP);
+    const sessionExists = findUserSession.some(async (session) => {
+        const decryptingUserIP = userIP === await decryptPassword(session.userIP);
         return session.token === token && decryptingUserIP === true;
     });
 

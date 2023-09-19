@@ -54,6 +54,10 @@ async function resendOTP(userName, functionPerformed, token) {
         const userIP = await fetchUserIP();
         const findIfUserSessionExistOrNot = await sessionsModel.find({ userName });
 
+        if (findIfUserSessionExistOrNot.userVerified === false) {
+            resendOTP(userName, 'newUserVerification')
+        }
+
         if (findIfUserSessionExistOrNot.length === 0) {
             return {
                 status: 69,

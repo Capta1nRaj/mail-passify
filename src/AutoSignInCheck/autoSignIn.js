@@ -8,7 +8,7 @@ require("dotenv").config();
 async function autoSignIn(userName, token) {
     await connect2MongoDB();
 
-    if (userName.length === 0 || token.length === 0) {
+    if (userName === undefined || token === undefined || userName.length === 0 || token.length === 0) {
         return {
             status: 69,
             message: "Please provide both a username and a token.",
