@@ -22,14 +22,7 @@ async function signInVerify(userName, otp) {
             // Decrypting The OTP From The User
             const decryptedOTP = (otp === await decryptPassword(gettingOTPFromDB));
 
-            if (decryptedOTP === false && i === getUserOTPViaSession.length) {
-
-                return {
-                    status: 204,
-                    message: "Wrong OTP"
-                }
-
-            } else if (decryptedOTP === true) {
+            if (decryptedOTP === true) {
 
                 const gettingUserIDToUpdate = getUserOTPViaSession[i]._id;
 
@@ -42,6 +35,14 @@ async function signInVerify(userName, otp) {
                     status: 200,
                     message: "Account Verified"
                 }
+
+            } else if (decryptedOTP === false && i === getUserOTPViaSession.length) {
+
+                return {
+                    status: 204,
+                    message: "Wrong OTP"
+                }
+
             }
         }
 
