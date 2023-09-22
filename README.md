@@ -1,5 +1,13 @@
 # What Is Mail-Passify?
 
+**Note 1:-** This is currently in **beta**, please refrain from using this in your main projects.
+
+**Note 2:-** Please refer to the documentation on my GitHub repository in case I missed mentioning something here.
+
+## Demo Link:-
+
+To test a demo before using this, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo](https://github.com/Capta1nRaj/mail-passify-demo)
+
 ## # Overview
 
 Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB for now.
@@ -41,7 +49,7 @@ npx mail-passify init
 ```
 
 3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
-
+   
    | Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
@@ -69,13 +77,21 @@ npx mail-passify init
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
+   
+4. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
-4. Include and configure the following in your .env file:
+```js
+npx mail-passify init
+```
+
+5. Include and configure the following in your .env file:
 
 ```js
 MONGODB_URI = YOUR_MONGODB_URI (mongodb://127.0.0.1:27017/DB-NAME)
 SENDGRID_API_KEY = YOUR_SENDGRID_API_KEY
 SENDGRID_EMAIL_ID = YOUR_SENDGRID_EMAIL_ID
+SECRET_KEY = YOUR_SECRET_KEY_FOR_ENCRYPTION
+SECRET_IV = YOUR_SECRET_IV_FOR_ENCRYPTION
 ```
 
 ## # Usage
