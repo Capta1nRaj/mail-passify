@@ -270,7 +270,7 @@ Else, if there are any doubts, please direct them to the login page and advise t
 
 ```js
 return {
-   status: 204,
+   status: 400,
    message: "Session Don't Exist"
 }
 ```

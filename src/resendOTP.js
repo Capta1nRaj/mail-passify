@@ -24,7 +24,7 @@ async function resendOTP(userName, functionPerformed, token) {
 
         if (findIfUserNameExistBeforeSending?.OTPCount >= userConfig.OTP_LIMITS) {
             return {
-                status: 204,
+                status: 400,
                 message: "Max OTP Limit Reached, Please Try After 10 Minutes."
             };
         }
@@ -90,7 +90,7 @@ async function resendOTP(userName, functionPerformed, token) {
 
             if (sessionToUpdate?.OTPCount >= userConfig.OTP_LIMITS) {
                 return {
-                    status: 204,
+                    status: 400,
                     message: "Max OTP Limit Reached, Please Try After 10 Minutes."
                 };
             }
@@ -125,7 +125,7 @@ async function resendOTP(userName, functionPerformed, token) {
         if (findIfUserNameExistBeforeSending?.OTPCount >= userConfig.OTP_LIMITS) {
 
             return {
-                status: 204,
+                status: 400,
                 message: "Max OTP Limit Reached, Please Try After 10 Minutes."
             };
 

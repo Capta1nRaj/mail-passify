@@ -15,7 +15,7 @@ async function logoutAll(userName, token) {
 
     if (findUserSession.length === 0) {
         return {
-            status: 204,
+            status: 400,
             message: "No Session Found.",
         };
     }
@@ -34,7 +34,7 @@ async function logoutAll(userName, token) {
     }
 
     return {
-        status: 204,
+        status: 400,
         message: "Data Not Valid.",
     };
 

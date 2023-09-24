@@ -34,7 +34,7 @@ async function autoSignIn(userName, token) {
     }
 
     return {
-        status: 204,
+        status: 400,
         message: "Session doesn't exist.",
     };
 }

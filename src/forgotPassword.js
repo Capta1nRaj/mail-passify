@@ -17,7 +17,7 @@ async function forgotPassword(userName, OTP, newPassword) {
         if (finduserAndSendEmailForVerification === null) {
 
             return {
-                status: 204,
+                status: 400,
                 message: "Username Doesn't Exist."
             }
 
@@ -50,7 +50,7 @@ async function forgotPassword(userName, OTP, newPassword) {
 
             } else if (checkIfUserAlreadyRequestedForOTP !== null) {
 
-                const updateTheExistingModel = await otpModel.findOneAndUpdate({ userName: userName }, { OTP: encryptedOTP })
+                const updateTheExistingModel = await otpModel.findOneAndUpdate({ userName: userName }, { OTP: encryptedOTP }, { new: true })
 
                 return {
                     status: 200,
@@ -72,7 +72,7 @@ async function forgotPassword(userName, OTP, newPassword) {
         if (decryptedOTP === false) {
 
             return {
-                status: 204,
+                status: 400,
                 message: "Wrong OTP"
             }
 
@@ -80,7 +80,7 @@ async function forgotPassword(userName, OTP, newPassword) {
 
             const encryptedPassword = await encryptPassword(newPassword)
 
-            const findAndUpdatePassword = await accountsModel.findOneAndUpdate({ userName: userName }, { userPassword: encryptedPassword });
+            const findAndUpdatePassword = await accountsModel.findOneAndUpdate({ userName: userName }, { userPassword: encryptedPassword }, { new: true });
 
             return {
                 status: 200,

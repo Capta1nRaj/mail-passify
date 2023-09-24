@@ -39,7 +39,7 @@ async function signInVerify(userName, otp) {
             } else if (decryptedOTP === false && i === getUserOTPViaSession.length) {
 
                 return {
-                    status: 204,
+                    status: 400,
                     message: "Wrong OTP"
                 }
 

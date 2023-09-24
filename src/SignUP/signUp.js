@@ -1,115 +1,92 @@
 const { connect2MongoDB } = require("connect2mongodb");
-
 const accountsModel = require("../../models/accountsModel");
 const otpModel = require("../../models/otpModel");
-
-const randomstring = require("randomstring");
-
-require("dotenv").config();
-
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 const encryptPassword = require("../PasswordHashing/encryptPassword");
 const randomStringGenerator = require("../randomStringGenerator");
 const sendOTPToUser = require("../sendOTPToUser");
+
+require("dotenv").config();
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
 
     await connect2MongoDB();
 
-    // Getting Data From The Client
-    const fullname = userFullName;
-    const username = userName;
-    const email = userEmail;
-    const password = userPassword;
-    var referredby = userReferredBy;
+    try {
 
-    // Checking If UserName Already Exists In DB Or Not
-    const findIfUserNameAlreadyExistInDBOrNot = await accountsModel.findOne({ userName: username });
+        // Checking If UserName & EmailId Already Exists In DB Or Not
+        const existingUser = await accountsModel.findOne({ $or: [{ userName }, { userEmail }] });
 
-    // Checking If EmailId Already Exists In DB Or Not
-    const findIfEmailIDAlreadyExistInDBOrNot = await accountsModel.findOne({ userEmail: email });
-
-    // Checking If userReferralCode Exist In DB Or Not
-    if (userReferredBy.length === 0) {
-        referredby = "";
-    } else if (userReferredBy.length !== 0) {
-        var checkIfuserReferralCodeExistInDBOrNot = await accountsModel.findOne({ userReferralCode: referredby });
-    }
-
-    if (findIfUserNameAlreadyExistInDBOrNot !== null) {
-        return {
-            status: 200,
-            message: "User Name Already Exists",
-        };
-    } else if (findIfEmailIDAlreadyExistInDBOrNot !== null) {
-        return {
-            status: 200,
-            message: "Email ID Already Exists",
-        };
-    } else if (checkIfuserReferralCodeExistInDBOrNot === null) {
-        return {
-            status: 200,
-            message: "Wrong Referral Code",
-        };
-    } else if (findIfUserNameAlreadyExistInDBOrNot === null && findIfEmailIDAlreadyExistInDBOrNot === null && checkIfuserReferralCodeExistInDBOrNot !== null) {
-        // User Unique Referral Code
-        const userReferralCode = await generatingUserReferralCode();
-        if (checkIfuserReferralCodeExistInDBOrNot === undefined) {
-            referredby = "";
+        // If User Exist, Notify The Client With The Following Message
+        if (existingUser) {
+            let message = "";
+            if (existingUser.userName === userName) {
+                message += "Username already exists. ";
+                return { status: 400, message };
+            }
+            if (existingUser.userEmail === userEmail) {
+                message += "Email already exists. ";
+                return { status: 400, message };
+            }
         }
 
-        // Securing Password Via Crypto
-        const encryptedPassword = await encryptPassword(password);
+        // Checking If User Entered A Referral Code Or Not
+        // If Entered, Check That It Exist Or Not
+        // If Not Entered, Set As ''
+        const referredByUser = userReferredBy.length > 0 ? await accountsModel.findOne({ userReferralCode: userReferredBy }) : '';
 
-        // Saving Details To DB
-        new accountsModel({
-            userFullName: fullname,
-            userName: username,
-            userEmail: email,
+        // If User Entered Wrong Referral Code, Return The Error
+        if (referredByUser === null) {
+            return { status: 200, message: "Wrong Referral Code" };
+        }
+
+        // Generating A Unique userReferralCode For The New User
+        const userReferralCode = await generatingUserReferralCode();
+
+        // Secure user password
+        const encryptedPassword = await encryptPassword(userPassword);
+
+        // Save New User Details To DB
+        await new accountsModel({
+            userFullName,
+            userName,
+            userEmail,
             userPassword: encryptedPassword,
-            userReferralCode: userReferralCode,
-            userReferredBy: referredby,
+            userReferralCode,
+            userReferredBy: referredByUser.userReferralCode || "",
         }).save();
 
-        // Generating Random OTP
+        // Generate And Securing an OTP
         const userOTP = await randomStringGenerator(6);
-
-        // Securing OTP Via Crypto
         const encryptedOTP = await encryptPassword(userOTP);
 
-        // Sending OTP To User
-        await sendOTPToUser(username, email, userOTP, 'signUp')
+        // Send Un-Secured OTP To The User Registered E-Mail
+        await sendOTPToUser(userName, userEmail, userOTP, 'signUp');
 
-        // Saving Details To DB
-        new otpModel({
-            userName: userName,
-            OTP: encryptedOTP
-        }).save();
+        // Saving Secured OTP to DB
+        await new otpModel({ userName, OTP: encryptedOTP }).save();
 
-        return {
-            status: 201,
-            message: "Account Created Successfully",
-            userName: username,
-        };
+        return { status: 201, message: "Account Created Successfully", userName };
+
+    } catch (error) {
+        return { status: 500, message: "Internal Server Error" };
     }
+}
 
-    // Generating A Unique Referral Code For User & Checking That If It's Exist In DB Or Not
-    // Once It Get's An Unique UserReferralCode, It Will Save The User Referral Code To DB
-    async function generatingUserReferralCode() {
-        const userReferralCode = await randomStringGenerator(6);
+// Generating Unique Referral Code For New User
+async function generatingUserReferralCode() {
+    // Random 6 Digit Generation
+    const userReferralCode = await randomStringGenerator(6);
 
-        // Checking If UserReferralCode Exist In DB Or Not
-        const checkIfuserReferralCodeExistInDBOrNot = await accountsModel.findOne({ userReferralCode: userReferralCode });
+    // Check If Code Already Exist In DB Or Not
+    const existingCode = await accountsModel.findOne({ userReferralCode });
 
-        // If Code Exist In DB, Then, Rerun The Function Else Retrun The Code.
-        if (checkIfuserReferralCodeExistInDBOrNot !== null) {
-            await generatingUserReferralCode();
-        } else if (checkIfuserReferralCodeExistInDBOrNot === null) {
-            return userReferralCode;
-        }
+    // If Referral Code Exists, Regenerate New Code
+    if (existingCode) {
+        return generatingUserReferralCode();
     }
+    return userReferralCode;
 }
 
 module.exports = signup;

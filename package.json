@@ -1,6 +1,6 @@
 {
   "name": "mail-passify",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Custom email and password authentication with two-step verification via SendGrid.",
   "main": "index.js",
   "scripts": {
