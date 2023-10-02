@@ -1,3 +1,5 @@
+// Here OTP Will Be Sent To User Registered E-Mail Will Custom Title/Format Depending Upon The Request
+
 require("dotenv").config();
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);

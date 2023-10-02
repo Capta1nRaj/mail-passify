@@ -14,8 +14,10 @@ async function decryptPassword(password) {
         password = buff.toString('utf-8');
         var decryptor = crypto.createDecipheriv(encryptionMethod, key, iv);
         return decryptor.update(password, 'base64', 'utf8') + decryptor.final('utf8');
+
     } catch (e) {
 
+        console.log("Error In File decryptPassword.js, Please Raise An Issue, Thanks Mate ♥.")
         return false;
 
     }

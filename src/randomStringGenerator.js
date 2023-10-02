@@ -1,3 +1,5 @@
+// Generating Random String Using randomString Module
+
 const randomstring = require("randomstring");
 
 async function randomStringGenerator(length) {
