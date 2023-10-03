@@ -5,44 +5,60 @@ const fetchUserIP = require("../fetchUserIP");
 
 require("dotenv").config();
 
-async function autoSignIn(userName, token) {
+async function autoSignIn(userName, token, id) {
 
     await connect2MongoDB();
 
-    // Checking If userName & Token Is Passed By Client Or Not
-    if (userName === undefined || token === undefined || userName.length === 0 || token.length === 0) {
-        return {
-            status: 400,
-            message: "Please Provide Both A Username And A Token.",
-        };
-    }
+    try {
 
-    // Fetching User IP
-    const userIP = await fetchUserIP();
+        // Checking If userName, Token, & id Is Passed By Client Or Not
+        if (userName === undefined || token === undefined || id === undefined || userName.length === 0 || token.length === 0) {
+            return {
+                status: 400,
+                message: "Please Provide Both A Username And A Token.",
+            };
+        }
 
-    // Finding The User Session In The DB
-    const session = await sessionsModel.findOne({
-        userName,
-        userVerified: true,
-        token,
-    });
+        // Find User Session Using ID
+        const findSessionUsingUserID = await sessionsModel.findById(id)
 
-    // If Session Exists, Compare The IP
-    if (session) {
-        const userIPDecrypted = await decryptPassword(session.userIP);
-        if (userIP === userIPDecrypted) {
+        // If No Session Exist In DB, Client Will Receive This Response
+        if (findSessionUsingUserID === null) {
+
+            return {
+                status: 400,
+                message: "Session doesn't exist.",
+            };
+
+        }
+
+        // Decrypting User IP
+        const userIPDecrypted = await decryptPassword(findSessionUsingUserID.userIP);
+        // Fetching User IP
+        const userIP = await fetchUserIP();
+
+        if (findSessionUsingUserID.userName === userName && findSessionUsingUserID.token === token && userIPDecrypted === userIP) {
+
             return {
                 status: 202,
                 message: "Session exists.",
             };
-        }
-    }
 
-    // If IP Compare Fails, Then, Redirect To Homepage
-    return {
-        status: 400,
-        message: "Session doesn't exist.",
-    };
+        } else {
+
+            return {
+                status: 400,
+                message: "Session doesn't exist.",
+            };
+
+        }
+
+    } catch (error) {
+        return {
+            status: 400,
+            message: "Session doesn't exist.",
+        };
+    }
 }
 
 module.exports = autoSignIn;

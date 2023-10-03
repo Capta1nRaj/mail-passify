@@ -45,11 +45,12 @@ async function signInVerify(userName, otp) {
                 const gettingUserIDToUpdate = getUserOTPViaSession[i]._id;
 
                 // This Will Update userVerified To True, Update ExpireAt After 10 Days, Remove OTP & OTPCount Fields
-                await sessionsModel.findOneAndUpdate({ _id: gettingUserIDToUpdate }, { userVerified: true, $unset: { OTP: 1, OTPCount: 1 }, $set: { expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } }, { new: true });
+                const data = await sessionsModel.findOneAndUpdate({ _id: gettingUserIDToUpdate }, { userVerified: true, $unset: { OTP: 1, OTPCount: 1 }, $set: { expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } }, { new: true });
 
                 return {
                     status: 200,
-                    message: "Account Verified"
+                    message: "Account Verified",
+                    id: data.id
                 }
 
                 // If No Correct OTP Is Found In Any Of The Session, Then, Return A Bad Request
