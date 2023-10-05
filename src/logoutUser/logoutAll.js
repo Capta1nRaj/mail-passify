@@ -5,44 +5,49 @@ const sessionsModel = require("../../models/sessionsModel");
 
 const fetchUserIP = require("../fetchUserIP");
 
-async function logoutAll(userName, token) {
+async function logoutAll(userName, token, id) {
 
     await connect2MongoDB();
 
-    // Fetching User IP
-    const userIP = await fetchUserIP();
+    try {
+        // Finding User Sessions By Id
+        const findUserSession = await sessionsModel.findById(id);
 
-    // Finding All User Sessions
-    const findUserSession = await sessionsModel.find({ userName: userName });
+        // If Session Is Null Means No Session Exist In DB, Then, Client Will Receive This Response
+        if (findUserSession.length === null) {
+            return {
+                status: 400,
+                message: "No Session Found.",
+            };
+        }
 
-    // If Session Length Is 0 Means No Session Will The Provided userName Exist In DB, Then, Client Will Receive This Response
-    if (findUserSession.length === 0) {
+        // Decrypting User IP
+        const userIPDecrypted = await decryptPassword(findUserSession.userIP);
+
+        // Fetching User IP
+        const userIP = await fetchUserIP();
+
+        // If Current Session Exist In DB, Then, Delte All The Sessions Which Have The userName In It
+        if (findUserSession.userName === userName && findUserSession.token === token && userIPDecrypted === userIP) {
+            await sessionsModel.deleteMany({ userName: userName });
+            return {
+                status: 200,
+                message: "User Session Deleted.",
+            };
+        }
+
+        // If Not Exist In DB, Then, Client Will Receive This Response
         return {
             status: 400,
-            message: "No Session Found.",
+            message: "Data Not Valid.",
         };
-    }
 
-    // It Will Find If The Current Session Exist In DB Or Not
-    const sessionExists = findUserSession.some(async (session) => {
-        const decryptingUserIP = userIP === await decryptPassword(session.userIP);
-        return session.token === token && decryptingUserIP === true;
-    });
-
-    // If Current Session Exist In DB, Then, Delte All The Sessions Which Have The userName In It
-    if (sessionExists) {
-        await sessionsModel.deleteMany({ userName: userName });
+    } catch (error) {
         return {
-            status: 200,
-            message: "User All Sessions Deleted.",
+            status: 400,
+            message: "Data Not Valid.",
         };
     }
-
-    // If Not Exist In DB, Then, Client Will Receive This Response
-    return {
-        status: 400,
-        message: "Data Not Valid.",
-    };
 
 }
 

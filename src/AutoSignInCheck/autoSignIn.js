@@ -15,7 +15,7 @@ async function autoSignIn(userName, token, id) {
         if (userName === undefined || token === undefined || id === undefined || userName.length === 0 || token.length === 0) {
             return {
                 status: 400,
-                message: "Please Provide Both A Username And A Token.",
+                message: "Please Provide Username, Token, & Id",
             };
         }
 
