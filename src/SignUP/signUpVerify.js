@@ -8,6 +8,14 @@ const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 async function signUpVerify(userName, otp) {
 
+    // If User Enters OTP Length Greater Than 6, Throw Error
+    if (otp.length > 6) {
+        return {
+            status: 400,
+            message: "Invalid OTP",
+        };
+    }
+
     await connect2MongoDB();
 
     // Firstly, It Will Find If User Exist In otpModel Or Not

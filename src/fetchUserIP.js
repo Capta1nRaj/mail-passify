@@ -24,7 +24,7 @@ async function fetchUserIP() {
         // Returning The IP
         return ipString;
     } catch (err) {
-        console.error("Error:", err);
+        console.error("Error While Fetching IP Is:- ", err);
     }
 }
 

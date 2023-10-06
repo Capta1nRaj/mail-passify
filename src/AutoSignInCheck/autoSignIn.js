@@ -7,7 +7,6 @@ require("dotenv").config();
 
 async function autoSignIn(userName, token, id) {
 
-    await connect2MongoDB();
 
     try {
 
@@ -18,6 +17,8 @@ async function autoSignIn(userName, token, id) {
                 message: "Please Provide Username, Token, & Id",
             };
         }
+
+        await connect2MongoDB();
 
         // Find User Session Using ID
         const findSessionUsingUserID = await sessionsModel.findById(id)
@@ -54,10 +55,12 @@ async function autoSignIn(userName, token, id) {
         }
 
     } catch (error) {
+
         return {
             status: 400,
             message: "Session doesn't exist.",
         };
+
     }
 }
 

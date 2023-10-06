@@ -9,23 +9,51 @@ const sendOTPToUser = require("../sendOTPToUser");
 require("dotenv").config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
+const allowedDomains = process.env.ALLOWED_EMAIL_DOMAINS.split(',');;
 
-    await connect2MongoDB();
+async function signup(userFullName, userName, userEmail, userPassword, userReferredBy) {
 
     try {
 
-        // Checking If UserName & EmailId Already Exists In DB Or Not
-        const existingUser = await accountsModel.findOne({ $or: [{ userName }, { userEmail }] });
+        // Checking If userFullName Is Valid Or Not
+        const regexForuserFullName = /^[a-zA-Z\s]+$/;
 
-        // If User Exist, Notify The Client With The Following Message
+        if (!regexForuserFullName.test(userFullName)) {
+            return { status: 400, message: "Invalid userFullname" };
+        }
+
+        // Checking If userName Is Valid Or Not
+        const regexForuserName = /^[a-zA-Z0-9_]+$/;
+
+        if (!regexForuserName.test(userName)) {
+            return { status: 400, message: "Invalid userName" };
+        }
+
+        // Checking If Email Includes 2 @ Signs
+        const regexForuserEmail = /^[a-zA-Z0-9._@]+$/;
+
+        if (userEmail.toLowerCase().includes('@', userEmail.toLowerCase().indexOf('@') + 1) || !regexForuserEmail.test(userEmail)) {
+            return { status: 400, message: "Invalid Email Buddy!" };
+        }
+
+        // Checking If Email Domain Is Allowed Or Not
+        if (!allowedDomains.some(domain => userEmail.toLowerCase().endsWith(domain))) {
+            return { status: 400, message: "Email Isn't From The Allowed Domains From The List." };
+        }
+
+        await connect2MongoDB();
+
+        // Checking If UserName & EmailId Already Exists In DB Or Not
+        const existingUser = await accountsModel.findOne({ $or: [{ userName: userName.toLowerCase() }, { userEmail: userEmail.toLowerCase() }] });
+
+        // If User Exist, Notify The Client With The Following Message Depending On The Case
         if (existingUser) {
             let message = "";
-            if (existingUser.userName === userName) {
+            if (existingUser.userName === userName.toLowerCase()) {
                 message += "Username already exists. ";
                 return { status: 400, message };
             }
-            if (existingUser.userEmail === userEmail) {
+            if (existingUser.userEmail === userEmail.toLowerCase()) {
                 message += "Email already exists. ";
                 return { status: 400, message };
             }
@@ -34,7 +62,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         // Checking If User Entered A Referral Code Or Not
         // If Entered, Check That It Exist Or Not
         // If Not Entered, Set As ''
-        const referredByUser = userReferredBy.length > 0 ? await accountsModel.findOne({ userReferralCode: userReferredBy }) : '';
+        const referredByUser = userReferredBy.toLowerCase().length > 0 ? await accountsModel.findOne({ userReferralCode: userReferredBy.toLowerCase() }) : '';
 
         // If User Entered Wrong Referral Code, Return The Error
         if (referredByUser === null) {
@@ -50,10 +78,10 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         // Save New User Details To DB
         await new accountsModel({
             userFullName,
-            userName,
-            userEmail,
+            userName: userName.toLowerCase(),
+            userEmail: userEmail.toLowerCase(),
             userPassword: encryptedPassword,
-            userReferralCode,
+            userReferralCode: userReferralCode,
             userReferredBy: referredByUser.userReferralCode || "",
         }).save();
 
@@ -62,12 +90,12 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         const encryptedOTP = await encryptPassword(userOTP);
 
         // Send Un-Secured OTP To The User Registered E-Mail
-        await sendOTPToUser(userName, userEmail, userOTP, 'signUp');
+        await sendOTPToUser(userName.toLowerCase(), userEmail.toLowerCase(), userOTP, 'signUp');
 
         // Saving Secured OTP to DB
-        await new otpModel({ userName, OTP: encryptedOTP }).save();
+        await new otpModel({ userName: userName.toLowerCase(), OTP: encryptedOTP }).save();
 
-        return { status: 201, message: "Account Created Successfully", userName };
+        return { status: 201, message: "Account Created Successfully", userName: userName.toLowerCase() };
 
     } catch (error) {
         return { status: 500, message: "Internal Server Error" };

@@ -8,10 +8,11 @@ const decryptPassword = require("./PasswordHashing/decryptPassword");
 
 async function forgotPassword(userName, OTP, newPassword) {
 
-    await connect2MongoDB()
 
     // Using This Case, We Are Generating OTP For User To Authenticate
     if (userName !== undefined && OTP === undefined && newPassword === undefined) {
+
+        await connect2MongoDB()
 
         // First We Find If User Exist Or Not
         const finduserAndSendEmailForVerification = await accountsModel.findOne({ userName: userName });

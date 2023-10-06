@@ -10,6 +10,7 @@ async function logoutAll(userName, token, id) {
     await connect2MongoDB();
 
     try {
+
         // Finding User Sessions By Id
         const findUserSession = await sessionsModel.findById(id);
 
@@ -43,10 +44,12 @@ async function logoutAll(userName, token, id) {
         };
 
     } catch (error) {
+
         return {
             status: 400,
             message: "Data Not Valid.",
         };
+
     }
 
 }
