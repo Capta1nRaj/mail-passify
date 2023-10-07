@@ -8,7 +8,7 @@ const decryptPassword = require("../PasswordHashing/decryptPassword");
 
 async function signUpVerify(userName, otp) {
 
-    // If User Enters OTP Length Greater Than 6, Throw Error
+    // If User Enters OTP With Length Greater Than 6, Throw An Error
     if (otp.length > 6) {
         return {
             status: 400,

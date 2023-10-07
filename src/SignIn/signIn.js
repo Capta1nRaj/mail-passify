@@ -99,7 +99,7 @@ async function signin(userName, userPassword) {
         const encryptedOTP = await encryptPassword(userOTP);
 
         // Saving Session To DB
-        new sessionsModel({
+        const savedData = await new sessionsModel({
             userName,
             token: userTokenAddress,
             userIP: encryptedUserIP,
@@ -110,10 +110,11 @@ async function signin(userName, userPassword) {
         await sendOTPToUser(userName, findEmailIDToLogin.userEmail, userOTP, 'signIn');
 
         return {
-            status: 200,
+            status: 201,
             message: "Sign In Successful, OTP Sent To Mail",
             userName,
             token: userTokenAddress,
+            id: savedData.id
         };
 
     } else {

@@ -14,7 +14,7 @@ const decryptPassword = require("./PasswordHashing/decryptPassword");
 
 require("dotenv").config();
 
-async function resendOTP(userName, functionPerformed, token) {
+async function resendOTP(userName, functionPerformed, token, id) {
 
     await connect2MongoDB();
 
@@ -30,7 +30,7 @@ async function resendOTP(userName, functionPerformed, token) {
         // If Not, Means Someone Is Trying To Uh....
         if (!findIfUserNameExistBeforeSending) {
             return {
-                status: 400,
+                status: 401,
                 message: "Is this Mr. Developer or someone trying to.... uh?",
             };
         }
@@ -64,84 +64,74 @@ async function resendOTP(userName, functionPerformed, token) {
         // If Old User Verification Needs To Be Done, Then, Run This Function
     } else if (functionPerformed === 'oldUserVerification') {
 
-        // Fetching userIP
-        const userIP = await fetchUserIP();
+        try {
 
-        // Finding If User Session Exist In DB Or Not
-        const findIfUserSessionExistOrNot = await sessionsModel.find({ userName });
+            // Finding If User Session Exist In DB Or Not
+            const findUserSessionViaID = await sessionsModel.findById(id)
 
-        // If Not, Means Someone Is Trying To Uh....
-        if (findIfUserSessionExistOrNot.length === 0) {
-            return {
-                status: 400,
-                message: "Is this Mr. Developer or someone trying to.... uh?"
+            // If Not, Means Someone Is Trying To Uh....
+            if (findUserSessionViaID === null) {
+                return {
+                    status: 401,
+                    message: "Is this Mr. Developer or someone trying to.... uh?"
+                }
             }
-        }
-
-        // Here, We Will Find User Session Position, So We Are Setting Session Exist To False & Index To -1
-        let sessionExists = false;
-        let sessionIndex = -1;
-
-        // Running A For Loop To Find User Session Position
-        for (let index = 0; index < findIfUserSessionExistOrNot.length; index++) {
-
-            // Getting Session Data By Values One By One
-            const session = findIfUserSessionExistOrNot[index];
-
-            // Decryptiong The IP
-            const userIPDecrypted = await decryptPassword(session.userIP);
-
-            // If userVerified Is False, Session Token Is Same, & userIP Is Same
-            // Then, Check sessionExist To True, & sessionIndex To The Index Number
-            if (!session.userVerified && session.token === token && userIP === userIPDecrypted) {
-                sessionExists = true;
-                sessionIndex = index;
-                break;
-            }
-
-        }
-
-        // When Session Exist Gets True, Then, The Function Will Continue From Here
-        if (sessionExists) {
-
-            // Ecnrytpiong The OTP
-            const encryptOTP = await encryptPassword(userOTP);
-
-            // Finding The Postion Of The Session
-            const sessionToUpdate = findIfUserSessionExistOrNot[sessionIndex];
 
             // If It Reaches The Limit i.e. OTP_LIMITS in JSON file, Then, Tell User To Try After 10 Minutes
-            if (sessionToUpdate.OTPCount >= userConfig.OTP_LIMITS) {
+            if (findUserSessionViaID.OTPCount >= userConfig.OTP_LIMITS) {
                 return {
                     status: 400,
                     message: "Max OTP Limit Reached, Please Try After 10 Minutes."
                 };
             }
 
-            // If Not, Then, Updating The OTP In The DB
-            sessionToUpdate.OTP = encryptOTP;
+            // Decrypting User IP
+            const userIPDecrypted = await decryptPassword(findUserSessionViaID.userIP);
 
-            // Increasing The OTP Count On Each Request In The DB
-            sessionToUpdate.OTPCount++;
+            // Fetching userIP
+            const userIP = await fetchUserIP();
 
-            // Updating The Document To DB
-            await sessionToUpdate.save();
+            if (findUserSessionViaID.userName === userName && findUserSessionViaID.token === token && userIP === userIPDecrypted) {
 
-            // Finding The Email Of The User
-            const findUserAndSendEmail = await accountsModel.findOne({ userName });
+                // Generating userOTP Of Length 6
+                const userOTP = await randomStringGenerator(6);
 
-            // Sending The OTP To The User
-            await sendOTPToUser(userName, findUserAndSendEmail?.userEmail, userOTP, 'signIn');
+                // Ecnrytpiong The OTP
+                const encryptOTP = await encryptPassword(userOTP);
+
+                // Updating Secured OTP TO DB
+                findUserSessionViaID.OTP = encryptOTP;
+
+                // Incrementing OTP Count To DB
+                findUserSessionViaID.OTPCount++;
+
+                // Updating The DB With New Details
+                await findUserSessionViaID.save();
+
+                // Finding The Email Of The User
+                const findUserAndSendEmail = await accountsModel.findOne({ userName });
+
+                // Sending The OTP To The User
+                await sendOTPToUser(userName, findUserAndSendEmail.userEmail, userOTP, 'signIn');
+
+                return {
+                    status: 201,
+                    message: "OTP Resent To The User.",
+                };
+
+            } else {
+
+                return {
+                    status: 401,
+                    message: "Is this Mr. Developer or someone trying to.... uh?",
+                };
+
+            }
+
+        } catch (error) {
 
             return {
-                status: 201,
-                message: "OTP Resent To The User.",
-            };
-
-        } else {
-
-            return {
-                status: 400,
+                status: 401,
                 message: "Is this Mr. Developer or someone trying to.... uh?",
             };
 
@@ -156,7 +146,7 @@ async function resendOTP(userName, functionPerformed, token) {
         // If Not, Means Someone Is Trying To Uh....
         if (findIfUserNameExistBeforeSending === null) {
             return {
-                status: 400,
+                status: 401,
                 message: "Is this Mr. Developer or someone trying to.... uh?",
             };
         }
@@ -174,8 +164,14 @@ async function resendOTP(userName, functionPerformed, token) {
         // Encrypting The OTP
         const encryptOTP = await encryptPassword(userOTP);
 
-        // Updating The OTP Model
-        await otpModel.findOneAndUpdate({ userName }, { OTP: encryptOTP, $inc: { OTPCount: 1 } });
+        // Updating Secured OTP TO DB
+        findIfUserNameExistBeforeSending.OTP = encryptOTP;
+
+        // Incrementing OTP Count To DB
+        findIfUserNameExistBeforeSending.OTPCount++;
+
+        // Updating The DB With New Details
+        await findIfUserNameExistBeforeSending.save();
 
         // Finding userEmail Via userName
         const findUserAndSendEmail = await accountsModel.findOne({ userName });

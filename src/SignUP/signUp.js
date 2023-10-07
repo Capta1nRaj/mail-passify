@@ -54,7 +54,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
                 return { status: 400, message };
             }
             if (existingUser.userEmail === userEmail.toLowerCase()) {
-                message += "Email already exists. ";
+                message += "Email ID already exists. ";
                 return { status: 400, message };
             }
         }
