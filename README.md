@@ -1,18 +1,16 @@
 # What Is Mail-Passify?
 
-**Note 1:-** This is currently in **beta**, please refrain from using this in your main projects.
-
-**Note 2:-** Please refer to the documentation on my GitHub repository in case I missed mentioning something here.
+**Note:-** Please refer to the documentation on my GitHub repository in case I missed mentioning something here.
 
 ## Demo Link:-
 
-To test a demo before using this, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo](https://github.com/Capta1nRaj/mail-passify-demo)
+To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo](https://github.com/Capta1nRaj/mail-passify-demo)
 
 ## # Overview
 
-Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB for now.
+Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB as database for now.
 
-## # Features
+## # Features In v2
 
 - ✅ Sign-Up With Two-Step Verification.
 - ✅ Sign-In With Two-Step Verification.
@@ -28,7 +26,7 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 
 ## # More Features To Be Added Later
 
-* Add Phone Number In Accounts Model With Verification.
+* Add Phone Number In Accounts Model With 2 Step Verification.
 * Change/Update User Info.
 * Delete Account But Make Sure User Don't Get Referral Points Again Once He Sign Up With Any Referral Code.
 
@@ -38,18 +36,25 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 
 1. Begin by installing the packages:-
 
+In back-end/server, install **mail-paasify**:-
+
 ```js
-npm i mail-passify cookies-next
+npm i mail-passify
 ```
 
-2. Create the configuration file:-
+Whereas, in front-end, install **cookies-next**:-
+
+```js
+npm i cookies-next
+```
+
+2. Generate the configuration file in server by using the command:-
 
 ```js
 npx mail-passify init
 ```
 
 3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
-   
    | Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
@@ -77,7 +82,6 @@ npx mail-passify init
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
-   
 4. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
 ```js
@@ -90,8 +94,9 @@ npx mail-passify init
 MONGODB_URI = YOUR_MONGODB_URI (mongodb://127.0.0.1:27017/DB-NAME)
 SENDGRID_API_KEY = YOUR_SENDGRID_API_KEY
 SENDGRID_EMAIL_ID = YOUR_SENDGRID_EMAIL_ID
-SECRET_KEY = YOUR_SECRET_KEY_FOR_ENCRYPTION
-SECRET_IV = YOUR_SECRET_IV_FOR_ENCRYPTION
+SECRET_KEY = YOUR_SECRET_KEY_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
+SECRET_IV = YOUR_SECRET_IV_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
+ALLOWED_EMAIL_DOMAINS=@gmail.com,@hotmail.com YOU_CAN_ADD_MORE_BY_SEPERATING_WITH_,(comma)
 ```
 
 ## # Usage

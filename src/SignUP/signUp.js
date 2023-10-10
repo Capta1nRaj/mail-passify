@@ -62,7 +62,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
         // Checking If User Entered A Referral Code Or Not
         // If Entered, Check That It Exist Or Not
         // If Not Entered, Set As ''
-        const referredByUser = userReferredBy.toLowerCase().length > 0 ? await accountsModel.findOne({ userReferralCode: userReferredBy.toLowerCase() }) : '';
+        const referredByUser = userReferredBy.length > 0 ? await accountsModel.findOne({ userReferralCode: userReferredBy }) : '';
 
         // If User Entered Wrong Referral Code, Return The Error
         if (referredByUser === null) {

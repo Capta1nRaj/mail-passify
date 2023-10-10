@@ -73,7 +73,7 @@ async function forgotPassword(userName, OTP, newPassword) {
                     // If It Reaches The Limit i.e. OTP_LIMITS in JSON file, Then, Tell User To Try After 10 Minutes
                     if (checkIfUserAlreadyRequestedForOTP.OTPCount >= userConfig.OTP_LIMITS) {
                         return {
-                            status: 400,
+                            status: 403,
                             message: "Max OTP Limit Reached, Please Try After 10 Minutes."
                         };
                     }

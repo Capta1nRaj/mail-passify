@@ -33,7 +33,7 @@ async function logoutAll(userName, token, id) {
             await sessionsModel.deleteMany({ userName: userName });
             return {
                 status: 200,
-                message: "User Session Deleted.",
+                message: "All Of The User's Session Deleted.",
             };
         }
 

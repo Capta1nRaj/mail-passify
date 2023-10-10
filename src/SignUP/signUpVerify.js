@@ -72,7 +72,7 @@ async function signUpVerify(userName, otp) {
         const deleteUserOTPDocument = await otpModel.findOneAndDelete({ userName: userName })
 
         return {
-            status: 200,
+            status: 202,
             message: "Account Verified"
         }
     }

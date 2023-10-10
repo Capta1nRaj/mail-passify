@@ -57,7 +57,7 @@ async function signin(userName, userPassword) {
             // If Exceeded Then Don't Generate More OTP
             if (checkIfOTPExistOrNot.OTPCount >= userConfig.OTP_LIMITS) {
                 return {
-                    status: 400,
+                    status: 403,
                     message: "Max OTP Limit Reached, Please Try After 10 Minutes."
                 };
             }

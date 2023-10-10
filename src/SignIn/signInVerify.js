@@ -30,7 +30,7 @@ async function signInVerify(userName, otp, id) {
             await sessionsModel.findByIdAndUpdate(id, { userVerified: true, $unset: { OTP: 1, OTPCount: 1 }, $set: { expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } }, { new: true });
 
             return {
-                status: 200,
+                status: 202,
                 message: "Account Verified",
             }
 
