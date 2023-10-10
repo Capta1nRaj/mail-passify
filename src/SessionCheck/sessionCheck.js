@@ -5,7 +5,7 @@ const fetchUserIP = require("../fetchUserIP");
 
 require("dotenv").config();
 
-async function autoSignIn(userName, token, id) {
+async function sessionCheck(userName, token, id) {
 
     try {
 
@@ -63,4 +63,4 @@ async function autoSignIn(userName, token, id) {
     }
 }
 
-module.exports = autoSignIn;
+module.exports = sessionCheck;

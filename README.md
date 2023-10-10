@@ -14,21 +14,23 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 
 - ✅ Sign-Up With Two-Step Verification.
 - ✅ Sign-In With Two-Step Verification.
-- ✅ Resend OTP.
-- ✅ OTP Limits.
+- ✅ No Disposable E-Mails Are Allowed To Signup.
+- ✅ Password's Are Encrypted With Crypto.
+- ✅ Resend OTP With Limited Requests.
 - ✅ Forgot Password With Two-Step Verification.
 - ✅ Auto User Session Checking.
 - ✅ Logout From Current Device.
 - ✅ Logout From All Devices.
 - ✅ Referral System.
-- ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
-- ❌ Unlock The Locked User Account (User + Auto).
 
 ## # More Features To Be Added Later
 
-* Add Phone Number In Accounts Model With 2 Step Verification.
-* Change/Update User Info.
-* Delete Account But Make Sure User Don't Get Referral Points Again Once He Sign Up With Any Referral Code.
+- ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
+- ❌ Unlock The Locked User Account (User + Auto).
+
+* ❌ Add Phone Number In Accounts Model With 2 Step Verification.
+* ❌ Change/Update User Info.
+* ❌ Delete Account But Make Sure User Don't Get Referral Points Again Once He Sign Up With Any Referral Code.
 
 ## # Getting Started
 
@@ -42,7 +44,8 @@ In back-end/server, install **mail-paasify**:-
 npm i mail-passify
 ```
 
-Whereas, in front-end, install **cookies-next**:-
+Whereas, in front-end, for fetching cookies, install **cookies-next**:-
+**Note:-** You can use your own method for fetching cookies.
 
 ```js
 npm i cookies-next
@@ -54,8 +57,7 @@ npm i cookies-next
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
-   | Name                                | Type    | Usage                                  |
+3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.| Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
    | SENDGRID_SIGN_IN_MAIL_TITLE         | String  | Custom title for sign-in confirmation. |
@@ -153,7 +155,7 @@ Set up the sign-up verify module in Back-End. Make sure to fetch userName from *
 
 ```js
 const { signUpVerify } = require("mail-passify");
-const response = await signUpVerify(userName, OTP);
+const response = await signUpVerify(userNameCookie, OTP);
 console.log(response);
 ```
 
@@ -184,7 +186,7 @@ const response = await signin(userName, userPassword)
 console.log(response);
 ```
 
-After the user signs in with correct details, they will receive an OTP on their registered email. As a result, you will receive a response similar to this:-
+After the user signs in with correct details, if the user is registered & has verified their account, they will receive an OTP on their email. You will receive this response, and you should then redirect them to the sign-in verification page:-
 
 ```js
 return {
@@ -192,46 +194,38 @@ return {
    message: "Sign In Successful, OTP Sent To Mail",
    userName: username,
    token: userTokenAddress,
+   id: savedData.id
 };
 ```
 
-**Note:-** If the user is registered but hasn't verified their account, you will receive this response, and you should redirect them to the verification page:-
+**Note:-** If the user is registered but hasn't verified their account, you will receive this response, and you should redirect them to the verification/signUpVerify page:-
 
 ```js
 return {
-   status: 200,
+   status: 401,
    message: "Please Verify Your Account",
    userName: username,
 }
 ```
 
-If the user is registered & has verified their account, they will receive an OTP on their email. You will receive this response, and you should then redirect them to the sign-in verification page:-
-
-```js
-return {
-   status: 200,
-   message: "Sign In Successful, OTP Sent To Mail",
-   userName: username,
-   token: userTokenAddress,
-};
-```
-
-As we did above, store the userName and token in cookies that we received from the response above ***(similar like this)***:-
+As we did above, store the userName, token, & Id in cookies that we received from the response above ***(similar like this)***:-
 
 ```js
 import { setCookie } from 'cookies-next';
 const setUserNameCookies = setCookie('userName', getUserNameFromResponse);
 const setToken = setCookie('token', getTokenFromResponse);
+const setId = setCookie('token', getIdFromResponse);
 ```
 
 ### 4. Sign-in Verify:-
 
-As mentioned above, the user has signed in with their details, and you have redirected them to the sign-in verification page. To proceed, use the following functions in the front-end to pass the data to the Back-End:-
+As mentioned above, the user has signed in with their details, and they are verified, then, you have redirected them to the sign-in verification page. To proceed, use the following functions in the front-end to pass the data to the Back-End:-
 
 ```js
 import { getCookie } from 'cookies-next';
 const userNameCookie = getCookie('userName');
-const data = {userNameCookie, OTP}
+const userIdCookie = getCookie('userId');
+const data = {userNameCookie, OTP, userId}
 const response = await axios.post('YOUR_URL', data)
 ```
 
@@ -239,7 +233,7 @@ Once the data is sent to the Back-End, use this method to verify the user:-
 
 ```js
 const { signInVerify } = require("mail-passify");
-const response = await signInVerify(userName, OTP);
+const response = await signInVerify(userNameCookie, OTP, userId);
 console.log(response);
 ```
 
@@ -247,19 +241,22 @@ If the user enters the correct OTP, in the **MongoDB Session Model**, the user d
 
 ```js
 return {
-   status: 200,
+   status: 202,
    message: "Account Verified"
 }
 ```
 
 ### 5. Auto User Login Session Check:-
 
-What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `AuthSignInCheck()` function to verify if the user's session is legitimate and active. Follow these steps:-
+What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `sessionCheck()` function to verify if the user's session is legitimate and active. Follow these steps:-
 
 ```js
 const { autoSignIn } = require("mail-passify");
-const response = await autoSignIn(userName, userToken);
-// Note:- IP will be automatically fetched.
+const userNameCookie = getCookie('userName');
+const userTokenCookie = getCookie('userToken');
+const userIdCookie = getCookie('userId');
+const response = await sessionCheck(userNameCookie, userTokenCookie, userId);
+// Note:- IP Will Be Automatically Fetched.
 ```
 
 If the user is legitimate, you will receive this response, and their session will remain logged in:-
@@ -271,7 +268,7 @@ return {
 }
 ```
 
-Else, if there are any doubts, please direct them to the login page and advise them to clear their cookies from their browser. The response you will receive is:-
+Else, if there are no session found, then, redirect them to the login page. The response you will receive is:-
 
 ```js
 return {
@@ -294,8 +291,9 @@ To begin, fetch **userName** and **token** from cookies in the Front-End, then p
 ```js
 import { getCookie } from 'cookies-next';
 const userNameCookie = getCookie('userName');
-const tokenCookie = getCookie('token');
-const data = { userNameCookie, tokenCookie };
+const userTokenCookie = getCookie('userToken ');
+const userIdCookie = getCookie('userId');
+const data = { userNameCookie, userTokenCookie, userIdCookie };
 const response = await axios.post('YOUR_URL', data);
 ```
 
@@ -303,10 +301,10 @@ Once the data is passed to the Back-End, use the **logoutOnce** function to remo
 
 ```js
 const { logoutOnce } = require("mail-passify");
-const response = await logoutOnce(userNameCookie, tokenCookie)
+const response = await logoutOnce(userNameCookie, userTokenCookie, userId)
 ```
 
-Once the user's session is deleted, you will receive this response:-
+Once the user's session is deleted, redirect them to homepage, & you will receive this response:-
 
 ```js
 return {
@@ -319,8 +317,8 @@ After deleting the session from MongoDB, please clear the user's browser cookies
 
 ```js
 import { deleteCookie } from 'cookies-next';
-deleteCookie('userName');
-deleteCookie('token');
+deleteCookie('userNameCookie');
+deleteCookie('userTokenCookie');
 ```
 
 #### Method 2 (All Sessions):-
@@ -329,7 +327,7 @@ All steps are the same as we did above in **Method 1**, just in the Back-End, yo
 
 ```js
 const { logoutAll } = require("mail-passify");
-const response = await logoutOnce(userNameCookie, tokenCookie)
+const response = await logoutOnce(userNameCookie, userTokenCookie, userIdCookie)
 ```
 
 ### 7. Forgot Password:-
@@ -352,7 +350,7 @@ After this, it will first verify whether the user exists in MongoDB or not. If t
 
 ```js
 return {
-   status: 200,
+   status: 201,
    message: "OTP Sent To Mail",
    userName: userName,
 };

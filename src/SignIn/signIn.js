@@ -71,7 +71,7 @@ async function signin(userName, userPassword) {
         await sendOTPToUser(userName, findEmailIDToLogin.userEmail, userOTP, 'signUp');
 
         return {
-            status: 200,
+            status: 401,
             message: "Please Verify Your Account",
             userName,
         };

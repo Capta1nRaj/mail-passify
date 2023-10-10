@@ -6,8 +6,8 @@ const signUpVerify = require("./src/SignUP/signUpVerify");
 const signin = require("./src/SignIn/signIn");
 const signInVerify = require("./src/SignIn/signInVerify");
 
-// Auto Sign In Session Check Imports
-const autoSignIn = require("./src/AutoSignInCheck/autoSignIn");
+// Session Check Imports
+const sessionCheck = require("./src/SessionCheck/sessionCheck");
 
 // Logout User Imports
 const logoutOnce = require("./src/logoutUser/logoutOnce");
@@ -17,4 +17,4 @@ const logoutAll = require("./src/logoutUser/logoutAll");
 const resendOTP = require("./src/resendOTP");
 const forgotPassword = require("./src/forgotPassword");
 
-module.exports = { signin, signInVerify, signup, signUpVerify, autoSignIn, logoutOnce, logoutAll, resendOTP, forgotPassword };
+module.exports = { signin, signInVerify, signup, signUpVerify, sessionCheck, logoutOnce, logoutAll, resendOTP, forgotPassword };
