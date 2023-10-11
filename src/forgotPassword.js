@@ -113,7 +113,7 @@ async function forgotPassword(userName, OTP, newPassword) {
             if (OTP.length > 6) {
                 return {
                     status: 400,
-                    message: "Invalid OTP",
+                    message: "Wrong OTP",
                 };
             }
 

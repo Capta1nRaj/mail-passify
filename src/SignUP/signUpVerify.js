@@ -12,7 +12,7 @@ async function signUpVerify(userName, otp) {
     if (otp.length > 6) {
         return {
             status: 400,
-            message: "Invalid OTP",
+            message: "Wrong OTP",
         };
     }
 
@@ -37,7 +37,7 @@ async function signUpVerify(userName, otp) {
 
         return {
             status: 400,
-            message: "Invalid OTP",
+            message: "Wrong OTP",
         };
 
         // If User Enters Correct OTP
