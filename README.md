@@ -384,3 +384,118 @@ To resend OTP for the **forgot password** functionality, use these values:-
 ```js
 const response = await resendOTP(userNameCookie, 'forgotPassword')
 ```
+
+### 8. Resend OTP:-
+
+There are **3 functions** to send OTP to the user:-
+
+1. Resend OTP For New/Unverified User.
+2. Resend OTP For Old/Verified User.
+3. Resend OTP For Forgot Password.
+
+#### Function 1 (For New Users):-
+
+Once the user is on **signup verify page**, & if he requests to resend the OTP, use this below syntax in your front-end:-
+
+```js
+const userNameCookie = getCookie('userName');
+const method = 'newUserVerification'; //This Helps Module To Know That Resend OTP For The unverified User
+const data = { userNameCookie, method };
+const response = await axios.post('YOUR_URL', data)
+```
+
+Once the data is received in the back-end, please perform the following actions:-
+
+```js
+const response = await resendOTP(data.userNameCookie, data.method)
+```
+
+Now it will find the document in the DB, & update the new OTP in the document, & will also increment the OTPCount by +1. Once the OTP is sent to the user, & updated in the DB, then, you will receive a response like this:-
+
+```js
+return {
+   status: 201,
+   message: "OTP Resent To The User.",
+};
+```
+
+If the OTPCount === OTP_LIMITS(mailpassify.json), then, it will not send OTP to the user, and you will receive a response like this:-
+
+```js
+return {
+   status: 403,
+   message: "Max OTP Limit Reached, Please Try After 10 Minutes."
+};
+```
+
+**Note:-** Once the OTP limits are reached, the user can try again after waiting for 5-10 minutes, as the OTP document from the database will be automatically deleted after this period.
+
+#### Function 2 (For Old Users):-
+
+Once the user is on **signin verify page**, & if he requests to resend the OTP, use this below syntax in your front-end:-
+
+```js
+const userNameCookie = getCookie('userName');
+const userTokenCookie = getCookie('userToken');
+const userIdCookie = getCookie('userId');
+const method = 'oldUserVerification'; //This Helps Module To Know That Resend OTP For The verified User
+const data = { userNameCookie, method, userTokenCookie, userIdCookie };
+const response = await axios.post('YOUR_URL', data)
+```
+
+Now it will find the document in the DB, & update the new OTP in the document, & will also increment the OTPCount by +1. Once the OTP is sent to the user, & updated in the DB, then, you will receive a response like this:-
+
+```js
+return {
+   status: 201,
+   message: "OTP Resent To The User.",
+};
+```
+
+If the OTPCount === OTP_LIMITS(mailpassify.json), then, it will not send OTP to the user, and you will receive a response like this:-
+
+```js
+return {
+   status: 403,
+   message: "Max OTP Limit Reached, Please Try After 10 Minutes."
+};
+```
+
+**Note:-** If a user reaches the maximum OTP request limit, they can still attempt to sign in again, which will generate different values.
+
+#### Function 3 (For Forgot Password):-
+
+Once the user is on **forgot password page**, & if he requests to resend the OTP, use this below syntax in your front-end:-
+
+```js
+const userNameCookie = getCookie('userName');
+const method = 'forgotPassword'; //This Helps Module To Know That Resend OTP For The forgotPassword User
+const data = { userNameCookie, method };
+const response = await axios.post('YOUR_URL', data)
+```
+
+Once the data is received in the back-end, please perform the following actions:-
+
+```js
+const response = await resendOTP(data.userNameCookie, data.method)
+```
+
+Now it will find the document in the DB, & update the new OTP in the document, & will also increment the OTPCount by +1. Once the OTP is sent to the user, & updated in the DB, then, you will receive a response like this:-
+
+```js
+return {
+   status: 201,
+   message: "OTP Resent To The User.",
+};
+```
+
+If the OTPCount === OTP_LIMITS(mailpassify.json), then, it will not send OTP to the user, and you will receive a response like this:-
+
+```js
+return {
+   status: 403,
+   message: "Max OTP Limit Reached, Please Try After 10 Minutes."
+};
+```
+
+**Note:-** Once the OTP limits are reached, the user can try again after waiting for 5-10 minutes, as the OTP document from the database will be automatically deleted after this period.
