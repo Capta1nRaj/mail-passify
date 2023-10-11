@@ -1,6 +1,6 @@
 # What Is Mail-Passify?
 
-**Note:-** Please refer to the documentation on my GitHub repository in case I missed mentioning something here.
+**Note:-** Please refer to the documentation on my GitHub repository in case I missed mentioning something here. Documentation for [v2.0.0]()
 
 ## Demo Link:-
 
@@ -10,24 +10,23 @@ To test a demo before using in your main project, visit here and read the README
 
 Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB as database for now.
 
-## # Features In v2
+## # Features In v2.0.0
 
-- ✅ Sign-Up With Two-Step Verification.
-- ✅ Sign-In With Two-Step Verification.
-- ✅ No Disposable E-Mails Are Allowed To Signup.
-- ✅ Password's Are Encrypted With Crypto.
-- ✅ Resend OTP With Limited Requests.
-- ✅ Forgot Password With Two-Step Verification.
-- ✅ Auto User Session Checking.
-- ✅ Logout From Current Device.
-- ✅ Logout From All Devices.
-- ✅ Referral System.
+- ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#1-sign-up-)
+- ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#3-sign-in-)
+- ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify#installation-)
+- ✅ [Password's Are Encrypted With Crypto.](https://nodejs.org/api/crypto.html)
+- ✅ [Resend OTP With Limited Requests.](https://github.com/Capta1nRaj/mail-passify#installation-)
+- ✅ [Forgot Password With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#7-forgot-password-)
+- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify#5-auto-user-login-session-check-)
+- ✅ [Logout Session From Current Device.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
+- ✅ [Logout Sessions From All Devices.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
+- ✅ [Referral System.](https://github.com/Capta1nRaj/mail-passify#installation-)
 
 ## # More Features To Be Added Later
 
-- ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
-- ❌ Unlock The Locked User Account (User + Auto).
-
+* ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
+* ❌ Unlock The Locked User Account (User + Auto).
 * ❌ Add Phone Number In Accounts Model With 2 Step Verification.
 * ❌ Change/Update User Info.
 * ❌ Delete Account But Make Sure User Don't Get Referral Points Again Once He Sign Up With Any Referral Code.
@@ -57,7 +56,9 @@ npm i cookies-next
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.| Name                                | Type    | Usage                                  |
+3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
+   
+   | Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
    | SENDGRID_SIGN_IN_MAIL_TITLE         | String  | Custom title for sign-in confirmation. |
@@ -84,6 +85,7 @@ npx mail-passify init
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
+
 4. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
 ```js
@@ -246,7 +248,7 @@ return {
 }
 ```
 
-### 5. Auto User Login Session Check:-
+### 5. Auto User Session Check:-
 
 What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `sessionCheck()` function to verify if the user's session is legitimate and active. Follow these steps:-
 
@@ -281,8 +283,8 @@ return {
 
 There are **2 methods** to logout the user:-
 
-1. Logout Current Session Only: The user gets logged out only from the current device.
-2. Logout All Sessions: The user gets logged out from all sessions.
+1. [Logout Current Session Only:-](https://github.com/Capta1nRaj/mail-passify#method-1-current-session-only-) The user gets logged out only from the current device.
+2. [Logout All Sessions:-](https://github.com/Capta1nRaj/mail-passify#method-2-all-sessions-) The user gets logged out from all sessions.
 
 #### Method 1 (Current Session Only):-
 
@@ -389,9 +391,9 @@ const response = await resendOTP(userNameCookie, 'forgotPassword')
 
 There are **3 functions** to send OTP to the user:-
 
-1. Resend OTP For New/Unverified User.
-2. Resend OTP For Old/Verified User.
-3. Resend OTP For Forgot Password.
+1. [Resend OTP For New/Unverified User.](https://github.com/Capta1nRaj/mail-passify#function-1-for-new-users-)
+2. [Resend OTP For Old/Verified User.](https://github.com/Capta1nRaj/mail-passify#function-2-for-old-users-)
+3. [Resend OTP For Forgot Password.](https://github.com/Capta1nRaj/mail-passify#function-3-for-forgot-password-)
 
 #### Function 1 (For New Users):-
 
