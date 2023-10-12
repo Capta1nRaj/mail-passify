@@ -1,10 +1,10 @@
 # What Is Mail-Passify?
 
-**Note:-** Please refer to the documentation on my GitHub repository in case I missed mentioning something here. Documentation for [v2.0.0]()
+**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v2.0.0](https://github.com/Capta1nRaj/mail-passify/tree/v2.0.0)
 
 ## Demo Link:-
 
-To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo](https://github.com/Capta1nRaj/mail-passify-demo)
+To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo/tree/v2.0.0](https://github.com/Capta1nRaj/mail-passify-demo/tree/v2.0.0)
 
 ## # Overview
 
@@ -15,16 +15,17 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 - ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#1-sign-up-)
 - ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#3-sign-in-)
 - ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify#installation-)
-- ✅ [Password's Are Encrypted With Crypto.](https://nodejs.org/api/crypto.html)
+- ✅ [Passwords Are Encrypted With Crypto.](https://nodejs.org/api/crypto.html)
 - ✅ [Resend OTP With Limited Requests.](https://github.com/Capta1nRaj/mail-passify#installation-)
 - ✅ [Forgot Password With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#7-forgot-password-)
-- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify#5-auto-user-login-session-check-)
-- ✅ [Logout Session From Current Device.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
-- ✅ [Logout Sessions From All Devices.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
+- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify#5-auto-user-session-check-)
+- ✅ [Logout Session Of Current Device.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
+- ✅ [Logout Sessions Of All Devices.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
 - ✅ [Referral System.](https://github.com/Capta1nRaj/mail-passify#installation-)
 
 ## # More Features To Be Added Later
 
+* ❌ Compatibility With Next.js.
 * ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
 * ❌ Unlock The Locked User Account (User + Auto).
 * ❌ Add Phone Number In Accounts Model With 2 Step Verification.
@@ -57,7 +58,6 @@ npx mail-passify init
 ```
 
 3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
-   
    | Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
@@ -85,7 +85,6 @@ npx mail-passify init
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
-
 4. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
 ```js
@@ -501,3 +500,5 @@ return {
 ```
 
 **Note:-** Once the OTP limits are reached, the user can try again after waiting for 5-10 minutes, as the OTP document from the database will be automatically deleted after this period.
+
+### Feel free to raise an issue if you find any bugs. Thanks in advance! 😁
