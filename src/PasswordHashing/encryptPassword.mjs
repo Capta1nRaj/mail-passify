@@ -25,4 +25,4 @@ async function encryptPassword(password) {
     }
 }
 
-export { encryptPassword };
+export default encryptPassword;

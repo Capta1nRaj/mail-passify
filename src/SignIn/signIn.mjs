@@ -3,11 +3,11 @@ import accountsModel from "../../models/accountsModel.mjs";
 import otpModel from "../../models/otpModel.mjs";
 import sessionsModel from "../../models/sessionsModel.mjs";
 import sgMail from "@sendgrid/mail";
-import { encryptPassword } from "../PasswordHashing/encryptPassword.mjs";
-import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
-import { fetchUserIP } from "../fetchUserIP.mjs";
-import { randomStringGenerator } from "../randomStringGenerator.mjs";
-import { sendOTPToUser } from "../sendOTPToUser.mjs";
+import encryptPassword from "../PasswordHashing/encryptPassword.mjs";
+import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
+import fetchUserIP from "../fetchUserIP.mjs";
+import randomStringGenerator from "../randomStringGenerator.mjs";
+import sendOTPToUser from "../sendOTPToUser.mjs";
 import userConfig from "../getUserConfig.mjs";
 
 import { config } from 'dotenv';
@@ -127,4 +127,4 @@ async function signin(userName, userPassword) {
     }
 }
 
-export { signin };
+export default signin;

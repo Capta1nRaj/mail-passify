@@ -1,5 +1,5 @@
 import { connect2MongoDB } from "connect2mongodb";
-import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
+import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 import sessionsModel from "../../models/sessionsModel.mjs";
 
 async function signInVerify(userName, otp, id) {
@@ -52,4 +52,4 @@ async function signInVerify(userName, otp, id) {
     }
 }
 
-export { signInVerify };
+export default signInVerify;

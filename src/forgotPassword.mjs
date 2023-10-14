@@ -1,10 +1,10 @@
 import { connect2MongoDB } from "connect2mongodb";
 import accountsModel from "../models/accountsModel.mjs";
 import otpModel from "../models/otpModel.mjs";
-import { sendOTPToUser } from "./sendOTPToUser.mjs";
-import { randomStringGenerator } from "./randomStringGenerator.mjs";
-import { encryptPassword } from "./PasswordHashing/encryptPassword.mjs";
-import { decryptPassword } from "./PasswordHashing/decryptPassword.mjs";
+import sendOTPToUser from "./sendOTPToUser.mjs";
+import randomStringGenerator from "./randomStringGenerator.mjs";
+import encryptPassword from "./PasswordHashing/encryptPassword.mjs";
+import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
 import userConfig from "./getUserConfig.mjs";
 
 async function forgotPassword(userName, OTP, newPassword) {
@@ -159,4 +159,4 @@ async function forgotPassword(userName, OTP, newPassword) {
 
 }
 
-export { forgotPassword };
+export default forgotPassword;

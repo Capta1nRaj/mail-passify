@@ -30,4 +30,4 @@ async function decryptPassword(password) {
     }
 }
 
-export { decryptPassword };
+export default decryptPassword;

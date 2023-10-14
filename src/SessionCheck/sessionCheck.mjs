@@ -1,7 +1,7 @@
 import { connect2MongoDB } from "connect2mongodb";
 import sessionsModel from "../../models/sessionsModel.mjs";
-import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
-import { fetchUserIP } from "../fetchUserIP.mjs";
+import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
+import fetchUserIP from "../fetchUserIP.mjs";
 
 import { config } from 'dotenv';
 config();
@@ -64,4 +64,4 @@ async function sessionCheck(userName, token, id) {
     }
 }
 
-export { sessionCheck };
+export default sessionCheck;

@@ -1,7 +1,7 @@
 import { connect2MongoDB } from "connect2mongodb";
-import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
+import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 import sessionsModel from "../../models/sessionsModel.mjs";
-import { fetchUserIP } from "../fetchUserIP.mjs";
+import fetchUserIP from "../fetchUserIP.mjs";
 
 async function logoutOnce(userName, token, id) {
 
@@ -49,4 +49,4 @@ async function logoutOnce(userName, token, id) {
     }
 }
 
-export { logoutOnce };
+export default logoutOnce;

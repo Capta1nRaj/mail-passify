@@ -9,4 +9,4 @@ async function randomStringGenerator(length) {
     });
 }
 
-export { randomStringGenerator };
+export default randomStringGenerator;

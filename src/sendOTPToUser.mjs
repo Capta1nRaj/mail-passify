@@ -99,4 +99,4 @@ async function sendOTPToUser(userName, userEmail, otp, functionPerformed) {
   sgMail.send(msg);
 }
 
-export { sendOTPToUser };
+export default sendOTPToUser;

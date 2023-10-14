@@ -42,4 +42,4 @@ async function fetchUserIP() {
     }
 }
 
-export { fetchUserIP };
+export default fetchUserIP;

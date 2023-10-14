@@ -6,12 +6,11 @@ import otpModel from "../models/otpModel.mjs";
 import fs from 'fs';
 const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
 
-import { sendOTPToUser } from "./sendOTPToUser.mjs";
-import { fetchUserIP } from "./fetchUserIP.mjs";
-import { randomStringGenerator } from "./randomStringGenerator.mjs";
-import { encryptPassword } from "./PasswordHashing/encryptPassword.mjs";
-import { decryptPassword } from "./PasswordHashing/decryptPassword.mjs";
-
+import sendOTPToUser from "./sendOTPToUser.mjs";
+import fetchUserIP from "./fetchUserIP.mjs";
+import randomStringGenerator from "./randomStringGenerator.mjs";
+import encryptPassword from "./PasswordHashing/encryptPassword.mjs";
+import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
 import { config } from 'dotenv';
 config();
 
@@ -188,4 +187,4 @@ async function resendOTP(userName, functionPerformed, token, id) {
     }
 }
 
-export { resendOTP };
+export default resendOTP;

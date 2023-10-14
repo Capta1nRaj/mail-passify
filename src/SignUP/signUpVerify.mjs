@@ -2,7 +2,7 @@ import { connect2MongoDB } from "connect2mongodb";
 import accountsModel from "../../models/accountsModel.mjs";
 import otpModel from '../../models/otpModel.mjs';
 import settingsModel from '../../models/settingsModel.mjs';
-import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
+import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 
 async function signUpVerify(userName, otp) {
 
@@ -76,4 +76,4 @@ async function signUpVerify(userName, otp) {
     }
 }
 
-export { signUpVerify };
+export default signUpVerify;
