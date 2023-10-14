@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { connect2MongoDB } = require('connect2mongodb');
 const settingsModel = require('../models/settingsModel')
 const fs = require('fs');
