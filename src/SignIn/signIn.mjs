@@ -1,17 +1,17 @@
-const { connect2MongoDB } = require("connect2mongodb");
-const accountsModel = require("../../models/accountsModel");
-const otpModel = require("../../models/otpModel");
-const sessionsModel = require("../../models/sessionsModel");
-const sgMail = require("@sendgrid/mail");
-const encryptPassword = require("../PasswordHashing/encryptPassword");
-const decryptPassword = require("../PasswordHashing/decryptPassword");
-const fetchUserIP = require("../fetchUserIP");
-const randomStringGenerator = require("../randomStringGenerator");
-const sendOTPToUser = require("../sendOTPToUser");
-const fs = require('fs');
-const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
+import { connect2MongoDB } from "connect2mongodb";
+import accountsModel from "../../models/accountsModel.mjs";
+import otpModel from "../../models/otpModel.mjs";
+import sessionsModel from "../../models/sessionsModel.mjs";
+import sgMail from "@sendgrid/mail";
+import { encryptPassword } from "../PasswordHashing/encryptPassword.mjs";
+import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
+import { fetchUserIP } from "../fetchUserIP.mjs";
+import { randomStringGenerator } from "../randomStringGenerator.mjs";
+import { sendOTPToUser } from "../sendOTPToUser.mjs";
+import userConfig from "../getUserConfig.mjs";
 
-require("dotenv").config();
+import { config } from 'dotenv';
+config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -127,4 +127,4 @@ async function signin(userName, userPassword) {
     }
 }
 
-module.exports = signin;
+export { signin };

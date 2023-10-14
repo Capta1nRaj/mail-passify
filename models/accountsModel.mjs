@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 mongoose.set('autoCreate', false);
 
 const AccountsSchema = new mongoose.Schema({
@@ -54,4 +54,4 @@ AccountsSchema.index({ userReferralCode: 1 }, { unique: true }); // Creating a u
 AccountsSchema.index({ userReferredBy: 1 }); // Creating an index on referredBy
 AccountsSchema.index({ userMobileNumber: 1 }); // Creating an index on userMobileNumber
 
-module.exports = mongoose.models.accounts || mongoose.model("accounts", AccountsSchema)
+export default mongoose.models.accounts || mongoose.model("accounts", AccountsSchema);

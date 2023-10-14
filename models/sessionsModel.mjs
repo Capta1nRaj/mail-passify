@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 mongoose.set('autoCreate', false);
 
 const SessionsSchema = new mongoose.Schema({
@@ -37,4 +37,4 @@ const SessionsSchema = new mongoose.Schema({
 
 SessionsSchema.index({ userName: 1 }); // Creating a index on userEmail
 
-module.exports = mongoose.models.sessions || mongoose.model("sessions", SessionsSchema)
+export default mongoose.models.sessions || mongoose.model("sessions", SessionsSchema);

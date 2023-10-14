@@ -2,10 +2,11 @@
   "name": "mail-passify",
   "version": "2.0.1",
   "description": "Custom email and password authentication with two-step verification via SendGrid.",
-  "main": "index.js",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "init": "npm run generate-config",
-    "generate-config": "./stubs/config-generator.js"
+    "generate-config": "./stubs/config-generator.mjs"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,6 @@
     "mail-passify"
   ],
   "bin": {
-    "generating-config-json-file": "./stubs/config-generator.js"
+    "generating-config-json-file": "./stubs/config-generator.mjs"
   }
 }

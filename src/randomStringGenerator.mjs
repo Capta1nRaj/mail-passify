@@ -1,6 +1,6 @@
 // Generating Random String Using randomString Module
 
-const randomstring = require("randomstring");
+import randomstring from "randomstring";
 
 async function randomStringGenerator(length) {
     return randomstring.generate({
@@ -9,4 +9,4 @@ async function randomStringGenerator(length) {
     });
 }
 
-module.exports = randomStringGenerator;
+export { randomStringGenerator };

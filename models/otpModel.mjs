@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 mongoose.set('autoCreate', false);
 
 const otpSchema = new mongoose.Schema({
@@ -25,4 +25,4 @@ const otpSchema = new mongoose.Schema({
 
 otpSchema.index({ userName: 1 }); // Creating a index on inviteCode
 
-module.exports = mongoose.models.OTP || mongoose.model("OTP", otpSchema)
+export default mongoose.models.OTP || mongoose.model("OTP", otpSchema);

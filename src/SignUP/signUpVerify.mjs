@@ -1,10 +1,8 @@
-const { connect2MongoDB } = require("connect2mongodb");
-
-const accountsModel = require("../../models/accountsModel");
-const otpModel = require('../../models/otpModel')
-const settingsModel = require('../../models/settingsModel')
-
-const decryptPassword = require("../PasswordHashing/decryptPassword");
+import { connect2MongoDB } from "connect2mongodb";
+import accountsModel from "../../models/accountsModel.mjs";
+import otpModel from '../../models/otpModel.mjs';
+import settingsModel from '../../models/settingsModel.mjs';
+import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
 
 async function signUpVerify(userName, otp) {
 
@@ -78,4 +76,4 @@ async function signUpVerify(userName, otp) {
     }
 }
 
-module.exports = signUpVerify;
+export { signUpVerify };

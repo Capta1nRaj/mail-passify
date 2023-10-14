@@ -1,18 +1,19 @@
-const { connect2MongoDB } = require("connect2mongodb");
-const accountsModel = require("../models/accountsModel");
-const sessionsModel = require("../models/sessionsModel");
-const otpModel = require("../models/otpModel");
+import { connect2MongoDB } from "connect2mongodb";
+import accountsModel from "../models/accountsModel.mjs";
+import sessionsModel from "../models/sessionsModel.mjs";
+import otpModel from "../models/otpModel.mjs";
 
-const fs = require('fs');
+import fs from 'fs';
 const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
 
-const sendOTPToUser = require("./sendOTPToUser");
-const fetchUserIP = require("./fetchUserIP");
-const randomStringGenerator = require("./randomStringGenerator");
-const encryptPassword = require("./PasswordHashing/encryptPassword");
-const decryptPassword = require("./PasswordHashing/decryptPassword");
+import { sendOTPToUser } from "./sendOTPToUser.mjs";
+import { fetchUserIP } from "./fetchUserIP.mjs";
+import { randomStringGenerator } from "./randomStringGenerator.mjs";
+import { encryptPassword } from "./PasswordHashing/encryptPassword.mjs";
+import { decryptPassword } from "./PasswordHashing/decryptPassword.mjs";
 
-require("dotenv").config();
+import { config } from 'dotenv';
+config();
 
 async function resendOTP(userName, functionPerformed, token, id) {
 
@@ -187,4 +188,4 @@ async function resendOTP(userName, functionPerformed, token, id) {
     }
 }
 
-module.exports = resendOTP;
+export { resendOTP };

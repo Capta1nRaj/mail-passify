@@ -1,9 +1,7 @@
-const { connect2MongoDB } = require("connect2mongodb");
-const decryptPassword = require("../PasswordHashing/decryptPassword");
-
-const sessionsModel = require("../../models/sessionsModel");
-
-const fetchUserIP = require("../fetchUserIP");
+import { connect2MongoDB } from "connect2mongodb";
+import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
+import sessionsModel from "../../models/sessionsModel.mjs";
+import { fetchUserIP } from "../fetchUserIP.mjs";
 
 async function logoutAll(userName, token, id) {
 
@@ -54,4 +52,4 @@ async function logoutAll(userName, token, id) {
 
 }
 
-module.exports = logoutAll;
+export { logoutAll };

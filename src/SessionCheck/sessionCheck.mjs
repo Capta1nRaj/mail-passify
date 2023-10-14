@@ -1,9 +1,10 @@
-const { connect2MongoDB } = require("connect2mongodb");
-const sessionsModel = require("../../models/sessionsModel");
-const decryptPassword = require("../PasswordHashing/decryptPassword");
-const fetchUserIP = require("../fetchUserIP");
+import { connect2MongoDB } from "connect2mongodb";
+import sessionsModel from "../../models/sessionsModel.mjs";
+import { decryptPassword } from "../PasswordHashing/decryptPassword.mjs";
+import { fetchUserIP } from "../fetchUserIP.mjs";
 
-require("dotenv").config();
+import { config } from 'dotenv';
+config();
 
 async function sessionCheck(userName, token, id) {
 
@@ -63,4 +64,4 @@ async function sessionCheck(userName, token, id) {
     }
 }
 
-module.exports = sessionCheck;
+export { sessionCheck };

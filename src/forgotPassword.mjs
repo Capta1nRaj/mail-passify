@@ -1,12 +1,11 @@
-const { connect2MongoDB } = require("connect2mongodb");
-const accountsModel = require("../models/accountsModel")
-const otpModel = require("../models/otpModel");
-const sendOTPToUser = require("./sendOTPToUser");
-const randomStringGenerator = require("./randomStringGenerator");
-const encryptPassword = require("./PasswordHashing/encryptPassword");
-const decryptPassword = require("./PasswordHashing/decryptPassword");
-const fs = require('fs');
-const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
+import { connect2MongoDB } from "connect2mongodb";
+import accountsModel from "../models/accountsModel.mjs";
+import otpModel from "../models/otpModel.mjs";
+import { sendOTPToUser } from "./sendOTPToUser.mjs";
+import { randomStringGenerator } from "./randomStringGenerator.mjs";
+import { encryptPassword } from "./PasswordHashing/encryptPassword.mjs";
+import { decryptPassword } from "./PasswordHashing/decryptPassword.mjs";
+import userConfig from "./getUserConfig.mjs";
 
 async function forgotPassword(userName, OTP, newPassword) {
 
@@ -160,4 +159,4 @@ async function forgotPassword(userName, OTP, newPassword) {
 
 }
 
-module.exports = forgotPassword;
+export { forgotPassword };

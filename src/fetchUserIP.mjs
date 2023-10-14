@@ -1,10 +1,11 @@
 // Fetching User IP Using external-ip NPM Module
 
-const externalIp = require("external-ip")();
-const util = require("util");
+import externalIp from "external-ip";
+const externalIpInstance = externalIp();
+import util from "util";
 
 // Promisify The External IP Function
-const getIPAsync = util.promisify(externalIp);
+const getIPAsync = util.promisify(externalIpInstance);
 
 // Fethcing User IP
 async function fetchExternalIP() {
@@ -41,4 +42,4 @@ async function fetchUserIP() {
     }
 }
 
-module.exports = fetchUserIP;
+export { fetchUserIP };
