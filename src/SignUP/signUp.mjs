@@ -42,6 +42,14 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
             return { status: 400, message: "Email Isn't From The Allowed Domains From The List." };
         }
 
+        // If User Passowrd Length Is Lesser Than 8, Throw An Error
+        if (userPassword.length <= 8) {
+            return {
+                status: 206,
+                message: "Min. Password Length Must Be Greater Than 8",
+            };
+        }
+
         await connect2MongoDB();
 
         // Checking If UserName & EmailId Already Exists In DB Or Not

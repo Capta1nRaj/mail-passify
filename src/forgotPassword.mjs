@@ -116,6 +116,14 @@ async function forgotPassword(userName, OTP, newPassword) {
                 };
             }
 
+            // If User Passowrd Length Is Lesser Than 8, Throw An Error
+            if (newPassword.length <= 8) {
+                return {
+                    status: 206,
+                    message: "Min. Password Length Must Be Greater Than 8",
+                };
+            }
+
             await connect2MongoDB();
 
             // Find The OTP In The DB To Verify

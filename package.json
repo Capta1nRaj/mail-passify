@@ -1,6 +1,6 @@
 {
   "name": "mail-passify",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Custom email and password authentication with two-step verification via SendGrid.",
   "main": "index.mjs",
   "type": "module",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/Capta1nRaj/mail-passify#readme",
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
-    "connect2mongodb": "^1.0.0-beta.0",
+    "connect2mongodb": "^0.4.1",
     "crypto-random-string": "^5.0.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
