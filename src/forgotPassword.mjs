@@ -5,7 +5,8 @@ import sendOTPToUser from "./sendOTPToUser.mjs";
 import randomStringGenerator from "./randomStringGenerator.mjs";
 import encryptPassword from "./PasswordHashing/encryptPassword.mjs";
 import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
-import userConfig from "./getUserConfig.mjs";
+import fs from 'fs';
+const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
 
 async function forgotPassword(userName, OTP, newPassword) {
 

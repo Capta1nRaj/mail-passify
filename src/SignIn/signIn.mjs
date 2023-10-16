@@ -8,7 +8,9 @@ import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 import fetchUserIP from "../fetchUserIP.mjs";
 import randomStringGenerator from "../randomStringGenerator.mjs";
 import sendOTPToUser from "../sendOTPToUser.mjs";
-import userConfig from "../getUserConfig.mjs";
+
+import fs from 'fs';
+const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
 
 import { config } from 'dotenv';
 config();
