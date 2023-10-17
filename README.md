@@ -117,7 +117,7 @@ const response = await axios.post('YOUR_URL', data);
 Next, configure the sign-up module on the Back-End:-
 
 ```js
-const { signup } = require("mail-passify");
+import signup from "mail-passify";
 const response = await signup(fullName, userName, emailID, password, referralCode);
 console.log(response);
 ```
@@ -155,7 +155,7 @@ const response = await axios.post('YOUR_URL', data);
 Set up the sign-up verify module in Back-End. Make sure to fetch userName from **cookies** as we stored it above.
 
 ```js
-const { signUpVerify } = require("mail-passify");
+import { signUpVerify } from "mail-passify";
 const response = await signUpVerify(userNameCookie, OTP);
 console.log(response);
 ```
@@ -182,7 +182,7 @@ const response = await axios.post('YOUR_URL', data);
 Next, configure the sign-in module on the Back-End:-
 
 ```js
-const { signin } = require("mail-passify");
+import { signin } from "mail-passify";
 const response = await signin(userName, userPassword)
 console.log(response);
 ```
@@ -233,7 +233,7 @@ const response = await axios.post('YOUR_URL', data)
 Once the data is sent to the Back-End, use this method to verify the user:-
 
 ```js
-const { signInVerify } = require("mail-passify");
+import { signInVerify } from "mail-passify";
 const response = await signInVerify(userNameCookie, OTP, userId);
 console.log(response);
 ```
@@ -252,7 +252,7 @@ return {
 What if the user's session has expired, and they are still logged in, or if they attempt to manipulate cookies and perform unauthorized actions? You know that's not good, right? So, use the `sessionCheck()` function to verify if the user's session is legitimate and active. Follow these steps:-
 
 ```js
-const { autoSignIn } = require("mail-passify");
+import { sessionCheck } from "mail-passify";
 const userNameCookie = getCookie('userName');
 const userTokenCookie = getCookie('userToken');
 const userIdCookie = getCookie('userId');
@@ -301,7 +301,7 @@ const response = await axios.post('YOUR_URL', data);
 Once the data is passed to the Back-End, use the **logoutOnce** function to remove the session from MongoDB, like this:-
 
 ```js
-const { logoutOnce } = require("mail-passify");
+import { logoutOnce } from "mail-passify";
 const response = await logoutOnce(userNameCookie, userTokenCookie, userId)
 ```
 
@@ -327,7 +327,7 @@ deleteCookie('userTokenCookie');
 All steps are the same as we did above in **Method 1**, just in the Back-End, you need to change the imports like this:-
 
 ```js
-const { logoutAll } = require("mail-passify");
+import { logoutAll } from "mail-passify";
 const response = await logoutOnce(userNameCookie, userTokenCookie, userIdCookie)
 ```
 
@@ -343,7 +343,7 @@ const response = await axios.post('YOUR_URL', data)
 Once the data is passed to the Back-End, use the **forgotPassword** function to reset/update the password in MongoDB like this:-
 
 ```js
-const { forgotPassword } = require("mail-passify");
+import { forgotPassword } from "mail-passify";
 const response = await forgotPassword(userName);
 ```
 
