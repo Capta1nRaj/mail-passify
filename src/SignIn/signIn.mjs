@@ -17,15 +17,17 @@ config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-async function signin(userName, userPassword) {
+async function signin(username, userPassword) {
+
+    const userName = username.toLowerCase();
 
     await connect2MongoDB();
 
     // Finding If User Exist Or Not Fron userName
-    const findEmailIDToLogin = await accountsModel.findOne({ userName });
+    const findUserToLogin = await accountsModel.findOne({ userName });
 
     // If userName Don't Exist, Return A Bad Request
-    if (!findEmailIDToLogin) {
+    if (!findUserToLogin) {
         return {
             status: 400,
             message: "Please Validate Your Details",
@@ -33,7 +35,7 @@ async function signin(userName, userPassword) {
     }
 
     // If User Is Not Verified, Redirect User To SignUp Page, & Ask Them To Verify First
-    if (!findEmailIDToLogin.userVerified) {
+    if (!findUserToLogin.userVerified) {
 
         // Generating OTP
         const userOTP = await randomStringGenerator(6);
@@ -70,7 +72,7 @@ async function signin(userName, userPassword) {
         }
 
         // Sending OTP To User Registered E-Mail
-        await sendOTPToUser(userName, findEmailIDToLogin.userEmail, userOTP, 'signUp');
+        await sendOTPToUser(userName, findUserToLogin.userEmail, userOTP, 'signUp');
 
         return {
             status: 401,
@@ -80,13 +82,13 @@ async function signin(userName, userPassword) {
     }
 
     // If User Is Verified, Then, Decrypt The User Password
-    const decryptedPassword = userPassword === await decryptPassword(findEmailIDToLogin.userPassword);
+    const decryptedPassword = userPassword === await decryptPassword(findUserToLogin.userPassword);
 
     // Fetching User IP
     const userIP = await fetchUserIP();
 
     // Checking If userName & userPassword Are The Same As Per The Client Entered
-    if (findEmailIDToLogin.userName === userName && decryptedPassword) {
+    if (findUserToLogin.userName === userName && decryptedPassword) {
 
         // Generating Token Address Of 128 Length
         const userTokenAddress = await randomStringGenerator(128);
@@ -109,7 +111,7 @@ async function signin(userName, userPassword) {
         }).save();
 
         // Sending OTP To User Registered E-Mail
-        await sendOTPToUser(userName, findEmailIDToLogin.userEmail, userOTP, 'signIn');
+        await sendOTPToUser(userName, findUserToLogin.userEmail, userOTP, 'signIn');
 
         return {
             status: 201,

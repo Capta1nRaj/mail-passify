@@ -8,7 +8,9 @@ import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
 import fs from 'fs';
 const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
 
-async function forgotPassword(userName, OTP, newPassword) {
+async function forgotPassword(username, OTP, newPassword) {
+
+    const userName = username.toLowerCase();
 
     try {
 

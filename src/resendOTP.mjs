@@ -14,7 +14,9 @@ import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
 import { config } from 'dotenv';
 config();
 
-async function resendOTP(userName, functionPerformed, token, id) {
+async function resendOTP(username, functionPerformed, token, id) {
+
+    const userName = username.toLowerCase();
 
     await connect2MongoDB();
 
