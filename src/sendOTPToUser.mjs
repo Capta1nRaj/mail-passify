@@ -9,7 +9,9 @@ import fs from 'fs';
 let userConfiJSONData = fs.readFileSync('mail-passify.json');
 let userConfig = JSON.parse(userConfiJSONData);
 
-async function sendOTPToUser(userName, userEmail, otp, functionPerformed) {
+async function sendOTPToUser(username, userEmail, otp, functionPerformed) {
+
+  const userName = username.toLowerCase();
 
   let emailTitle;
 

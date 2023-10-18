@@ -3,7 +3,9 @@ import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 import sessionsModel from "../../models/sessionsModel.mjs";
 import fetchUserIP from "../fetchUserIP.mjs";
 
-async function logoutAll(userName, token, id) {
+async function logoutAll(username, token, id) {
+
+    const userName = username.toLowerCase();
 
     await connect2MongoDB();
 

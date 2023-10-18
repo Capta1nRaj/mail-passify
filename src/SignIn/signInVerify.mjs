@@ -2,7 +2,9 @@ import { connect2MongoDB } from "connect2mongodb";
 import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 import sessionsModel from "../../models/sessionsModel.mjs";
 
-async function signInVerify(userName, otp, id) {
+async function signInVerify(username, otp, id) {
+
+    const userName = username.toLowerCase();
 
     // If User Enters OTP With Length Greater Than 6, Throw An Error
     if (otp.length > 6) {

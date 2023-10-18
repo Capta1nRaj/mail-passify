@@ -6,7 +6,9 @@ import fetchUserIP from "../fetchUserIP.mjs";
 import { config } from 'dotenv';
 config();
 
-async function sessionCheck(userName, token, id) {
+async function sessionCheck(username, token, id) {
+
+    const userName = username.toLowerCase();
 
     try {
 

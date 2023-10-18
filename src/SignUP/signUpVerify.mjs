@@ -4,7 +4,9 @@ import otpModel from '../../models/otpModel.mjs';
 import settingsModel from '../../models/settingsModel.mjs';
 import decryptPassword from "../PasswordHashing/decryptPassword.mjs";
 
-async function signUpVerify(userName, otp) {
+async function signUpVerify(username, otp) {
+
+    const userName = username.toLowerCase();
 
     // If User Enters OTP With Length Greater Than 6, Throw An Error
     if (otp.length > 6) {
