@@ -1,17 +1,18 @@
-# What Is Mail-Passify?
+# What Is Mail Passify?
 
-**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v2.0.0](https://github.com/Capta1nRaj/mail-passify/tree/v2.0.0)
+**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v3](https://github.com/Capta1nRaj/mail-passify/tree/v3)
 
 ## Demo Link:-
 
-To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo/tree/v2.0.0](https://github.com/Capta1nRaj/mail-passify-demo/tree/v2.0.0)
+To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo/tree/v3](https://github.com/Capta1nRaj/mail-passify-demo/tree/v3)
 
 ## # Overview
 
-Mail-Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB as database for now.
+Mail Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB as database for now.
 
-## # Features In v2.0.0
+## # Features In v3
 
+- ✅ [Compatible with Next.js.](https://nextjs.org/)
 - ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#1-sign-up-)
 - ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#3-sign-in-)
 - ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify#installation-)
@@ -25,7 +26,6 @@ Mail-Passify is a Node.js module that empowers you to create a robust user **sig
 
 ## # More Features To Be Added Later
 
-* ❌ Compatibility With Next.js.
 * ❌ Lock User After N-Times Failed Login Attempts & Send Notification Email To The User.
 * ❌ Unlock The Locked User Account (User + Auto).
 * ❌ Add Phone Number In Accounts Model With 2 Step Verification.
@@ -51,13 +51,24 @@ Whereas, in front-end, for fetching cookies, install **cookies-next**:-
 npm i cookies-next
 ```
 
-2. Generate the configuration file in server by using the command:-
+2. Configure & Include the following values in your .env file:
+
+```js
+MONGODB_URI = YOUR_MONGODB_URI (mongodb://127.0.0.1:27017/DB-NAME)
+SENDGRID_API_KEY = YOUR_SENDGRID_API_KEY
+SENDGRID_EMAIL_ID = YOUR_SENDGRID_EMAIL_ID
+SECRET_KEY = YOUR_SECRET_KEY_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
+SECRET_IV = YOUR_SECRET_IV_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
+ALLOWED_EMAIL_DOMAINS=@gmail.com,@hotmail.com {YOU_CAN_ADD_MORE_BY_SEPERATING_WITH_,(comma)}
+```
+3. Generate the configuration file in server by using the command:-
 
 ```js
 npx mail-passify init
 ```
 
-3. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
+4. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
+
    | Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
@@ -85,21 +96,11 @@ npx mail-passify init
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
-4. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
+
+5. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
 ```js
 npx mail-passify init
-```
-
-5. Include and configure the following in your .env file:
-
-```js
-MONGODB_URI = YOUR_MONGODB_URI (mongodb://127.0.0.1:27017/DB-NAME)
-SENDGRID_API_KEY = YOUR_SENDGRID_API_KEY
-SENDGRID_EMAIL_ID = YOUR_SENDGRID_EMAIL_ID
-SECRET_KEY = YOUR_SECRET_KEY_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
-SECRET_IV = YOUR_SECRET_IV_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
-ALLOWED_EMAIL_DOMAINS=@gmail.com,@hotmail.com YOU_CAN_ADD_MORE_BY_SEPERATING_WITH_,(comma)
 ```
 
 ## # Usage
