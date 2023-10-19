@@ -1,3 +1,22 @@
+<p align="center">
+  <a href="https://github.com/Capta1nRaj/mail-passify" target="_blank"><img width="200px" src="https://github.com/Capta1nRaj/mail-passify/assets/101660221/91b0dd5c-a57b-4959-b9da-863e845ac820" /></a>
+  <h3 align="center">Mail Passify</h3>
+  <p align="center" style="align: center;">
+      <a href="https://github.com/Capta1nRaj/mail-passify/stargazers">
+         <img src="https://img.shields.io/github/stars/Capta1nRaj/mail-passify" alt="Github Stars" />
+      </a>
+      <a href="https://github.com/Capta1nRaj/mail-passify/blob/main/LICENSE">
+         <img src="https://img.shields.io/github/license/Capta1nRaj/mail-passify" alt="Licence" />
+      </a>
+      <a href="https://www.npmtrends.com/mail-passify">
+         <img src="https://img.shields.io/npm/dm/mail-passify" alt="Downloads" />
+      </a>
+      <a href="https://bundlephobia.com/package/mail-passify@3.0.0">
+         <img src="https://img.shields.io/bundlephobia/min/mail-passify/3.0.0" alt="Size" />
+      </a>
+   </p>
+</p>
+
 # What Is Mail Passify?
 
 **Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v3](https://github.com/Capta1nRaj/mail-passify/tree/v3).
