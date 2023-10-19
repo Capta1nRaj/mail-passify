@@ -91,7 +91,7 @@ async function signup(userFullName, userName, userEmail, userPassword, userRefer
             userEmail: userEmail.toLowerCase(),
             userPassword: encryptedPassword,
             userReferralCode: userReferralCode,
-            userReferredBy: referredByUser.userReferralCode || "",
+            userReferredBy: referredByUser.userName || "",
         }).save();
 
         // Generate And Securing an OTP

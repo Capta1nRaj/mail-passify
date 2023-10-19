@@ -65,7 +65,7 @@ async function signUpVerify(username, otp) {
 
             // Secondly, It Will Update The Points For The User (REFERRED_POINTS As Per JSON File) Who Referred Them And Add The User's userName To The Referrer's List
             // It Will User The Referral Code To Find The User Who Referred A New User
-            var updateTheReferralPoints = await accountsModel.findOneAndUpdate({ userReferralCode: getTheUserWhomHeGotReferred.userReferredBy }, { $addToSet: { userReferrals: getTheUserWhomHeGotReferred.userName }, $inc: { points: getPointsValues.referred_points } }, { new: true });
+            var updateTheReferralPoints = await accountsModel.findOneAndUpdate({ userName: getTheUserWhomHeGotReferred.userReferredBy }, { $addToSet: { userReferrals: getTheUserWhomHeGotReferred.userName }, $inc: { points: getPointsValues.referred_points } }, { new: true });
         }
 
         // Delete The OTP From otpModel Collection

@@ -1,6 +1,6 @@
 # What Is Mail Passify?
 
-**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v3](https://github.com/Capta1nRaj/mail-passify/tree/v3)
+**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v3](https://github.com/Capta1nRaj/mail-passify/tree/v3).
 
 ## Demo Link:-
 
@@ -13,16 +13,16 @@ Mail Passify is a Node.js module that empowers you to create a robust user **sig
 ## # Features In v3
 
 - ✅ [Compatible with Next.js.](https://nextjs.org/)
-- ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#1-sign-up-)
-- ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#3-sign-in-)
-- ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify#installation-)
+- ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3#1-sign-up-)
+- ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3#3-sign-in-)
 - ✅ [Passwords Are Encrypted With Crypto.](https://nodejs.org/api/crypto.html)
-- ✅ [Resend OTP With Limited Requests.](https://github.com/Capta1nRaj/mail-passify#installation-)
-- ✅ [Forgot Password With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify#7-forgot-password-)
-- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify#5-auto-user-session-check-)
-- ✅ [Logout Session Of Current Device.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
-- ✅ [Logout Sessions Of All Devices.](https://github.com/Capta1nRaj/mail-passify#6-logout-)
-- ✅ [Referral System.](https://github.com/Capta1nRaj/mail-passify#installation-)
+- ✅ [Referral System.](https://github.com/Capta1nRaj/mail-passify/tree/v3#installation-)
+- ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify/tree/v3#installation-)
+- ✅ [Resend OTP With Limited Requests.](https://github.com/Capta1nRaj/mail-passify/tree/v3#installation-)
+- ✅ [Forgot Password With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3#7-forgot-password-)
+- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify/tree/v3#5-auto-user-session-check-)
+- ✅ [Logout Session Of Current Device.](https://github.com/Capta1nRaj/mail-passify/tree/v3#6-logout-)
+- ✅ [Logout Sessions Of All Devices.](https://github.com/Capta1nRaj/mail-passify/tree/v3#6-logout-)
 
 ## # More Features To Be Added Later
 
@@ -34,18 +34,19 @@ Mail Passify is a Node.js module that empowers you to create a robust user **sig
 
 ## # Getting Started
 
+
 ### Installation:-
 
 1. Begin by installing the packages:-
 
-In back-end/server, install **mail-paasify**:-
+In back-end/front-end, depends on your use, install **mail-paasify**:-
 
 ```js
 npm i mail-passify
 ```
 
 Whereas, in front-end, for fetching cookies, install **cookies-next**:-
-**Note:-** You can use your own method for fetching cookies.
+**Note:-** You can use your own method for fetching cookies. For eg.:- You can also set/fetch cookies via server-side in Next.js, [READ HERE](https://nextjs.org/docs/app/api-reference/functions/cookies).
 
 ```js
 npm i cookies-next
@@ -61,6 +62,7 @@ SECRET_KEY = YOUR_SECRET_KEY_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
 SECRET_IV = YOUR_SECRET_IV_FOR_ENCRYPTION_OF_LENGTH_32_OR_GREATER
 ALLOWED_EMAIL_DOMAINS=@gmail.com,@hotmail.com {YOU_CAN_ADD_MORE_BY_SEPERATING_WITH_,(comma)}
 ```
+
 3. Generate the configuration file in server by using the command:-
 
 ```js
@@ -96,7 +98,7 @@ npx mail-passify init
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
-
+   
 5. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
 ```js
@@ -216,7 +218,7 @@ As we did above, store the userName, token, & Id in cookies that we received fro
 import { setCookie } from 'cookies-next';
 const setUserNameCookies = setCookie('userName', getUserNameFromResponse);
 const setToken = setCookie('token', getTokenFromResponse);
-const setId = setCookie('token', getIdFromResponse);
+const setId = setCookie('id', getIdFromResponse);
 ```
 
 ### 4. Sign-in Verify:-
@@ -283,8 +285,8 @@ return {
 
 There are **2 methods** to logout the user:-
 
-1. [Logout Current Session Only:-](https://github.com/Capta1nRaj/mail-passify#method-1-current-session-only-) The user gets logged out only from the current device.
-2. [Logout All Sessions:-](https://github.com/Capta1nRaj/mail-passify#method-2-all-sessions-) The user gets logged out from all sessions.
+1. [Logout Current Session Only:-](https://github.com/Capta1nRaj/mail-passify/tree/v3#method-1-current-session-only-) The user gets logged out only from the current device.
+2. [Logout All Sessions:-](https://github.com/Capta1nRaj/mail-passify/tree/v3#method-2-all-sessions-) The user gets logged out from all sessions.
 
 #### Method 1 (Current Session Only):-
 
@@ -329,7 +331,7 @@ All steps are the same as we did above in **Method 1**, just in the Back-End, yo
 
 ```js
 import { logoutAll } from "mail-passify";
-const response = await logoutOnce(userNameCookie, userTokenCookie, userIdCookie)
+const response = await logoutAll(userNameCookie, userTokenCookie, userIdCookie)
 ```
 
 ### 7. Forgot Password:-
@@ -389,11 +391,11 @@ const response = await resendOTP(userNameCookie, 'forgotPassword')
 
 ### 8. Resend OTP:-
 
-There are **3 functions** to send OTP to the user:-
+There are **3 functions** to resend OTP to the user:-
 
-1. [Resend OTP For New/Unverified User.](https://github.com/Capta1nRaj/mail-passify#function-1-for-new-users-)
-2. [Resend OTP For Old/Verified User.](https://github.com/Capta1nRaj/mail-passify#function-2-for-old-users-)
-3. [Resend OTP For Forgot Password.](https://github.com/Capta1nRaj/mail-passify#function-3-for-forgot-password-)
+1. [Resend OTP For New/Unverified User.](https://github.com/Capta1nRaj/mail-passify/tree/v3#function-1-for-new-users-)
+2. [Resend OTP For Old/Verified User.](https://github.com/Capta1nRaj/mail-passify/tree/v3#function-2-for-old-users-)
+3. [Resend OTP For Forgot Password.](https://github.com/Capta1nRaj/mail-passify/tree/v3#function-3-for-forgot-password-)
 
 #### Function 1 (For New Users):-
 
