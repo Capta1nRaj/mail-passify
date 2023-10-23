@@ -34,6 +34,8 @@ async function generateConfigFile() {
         // Write the configuration to a file
         fs.writeFileSync('mail-passify.json', JSON.stringify(jsonTemplate, null, 2));
         console.log('Configuration File Generated Successfully.');
+    } else {
+        console.log('Configuration File Successfully Updated.');
     }
 
     // Defining A Dynamic Email Template
