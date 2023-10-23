@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Capta1nRaj/mail-passify#readme",
   "dependencies": {
+    "@react-email/render": "^0.0.7",
     "@sendgrid/mail": "^7.7.0",
     "connect2mongodb": "^0.4.1",
     "crypto-random-string": "^5.0.0",
