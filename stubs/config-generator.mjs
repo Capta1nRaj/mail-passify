@@ -4,10 +4,18 @@ import { connect2MongoDB } from 'connect2mongodb';
 import settingsModel from '../models/settingsModel.mjs'
 import fs from 'fs';
 
+//! Importing The HTML File
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const currentModuleFile = fileURLToPath(import.meta.url);
+const emailTemplatePath = path.join(dirname(currentModuleFile), '../src/email-template.html');
+const emailTemplate = fs.readFileSync(emailTemplatePath, 'utf8');
+
 async function generateConfigFile() {
 
     // Defining The ContentS Of The Configuration File
-    const config = {
+    const jsonTemplate = {
         "SENDGRID_SIGN_UP_MAIL_TITLE": "Custom-Signup-Title",
         "SENDGRID_SIGN_IN_MAIL_TITLE": "Custom-Signin-Title",
         "SENDGRID_FORGOT_PASSWORD_MAIL_TITLE": "Custom-Forgot-Password-Title",
@@ -16,20 +24,30 @@ async function generateConfigFile() {
         "OTP_LIMITS": 3,
     }
 
+    //! Generating Mail Passify JSON File
     // Checking If File Don't Exist, Generate A File Else Don't
     const checkIfFileExistOrNot = fs.existsSync('mail-passify.json');
 
     // If File Don't Exist, Then, Generate The File
+    // If Exist, Then, Skip
     if (checkIfFileExistOrNot === false) {
-
         // Write the configuration to a file
-        fs.writeFileSync('mail-passify.json', JSON.stringify(config, null, 2));
+        fs.writeFileSync('mail-passify.json', JSON.stringify(jsonTemplate, null, 2));
         console.log('Configuration File Generated Successfully.');
+    }
 
-        // If Exist, Then, Skip
-    } else if (checkIfFileExistOrNot === true) {
+    // Defining A Dynamic Email Template
+    const htmlTemplate = `${emailTemplate}`;
 
-
+    //! Generating Email Template HTML File
+    // Checking If File Don't Exist, Generate A File Else Don't
+    const checkEmailTemplateFile = fs.existsSync('email-template.html');
+    // If File Don't Exist, Then, Generate The File
+    // If Exist, Then, Skip
+    if (checkEmailTemplateFile === false) {
+        // Write the configuration to a file
+        fs.writeFileSync('email-template.html', htmlTemplate);
+        console.log('Email Template HTML File Generated Successfully.');
     }
 }
 
@@ -67,12 +85,12 @@ async function generateOrUpdatePoints() {
     }
 }
 
-// Running Functions Step By Step
+//! Running Functions Step By Step
 async function runStepByStep() {
     await generateConfigFile()
     await generateOrUpdatePoints()
     process.exit()
 }
 
-// Function Is Called Here
+//! Function Is Called Here
 runStepByStep()
