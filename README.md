@@ -19,29 +19,30 @@
 
 # What Is Mail Passify?
 
-**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v3](https://github.com/Capta1nRaj/mail-passify/tree/v3).
+**Note:-** Please refer to the documentation on my GitHub repository in case I missed or inaccurately mentioned something here. Documentation for [v3.1](https://github.com/Capta1nRaj/mail-passify/tree/v3.1).
 
 ## Demo Link:-
 
-To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo/tree/v3](https://github.com/Capta1nRaj/mail-passify-demo/tree/v3)
+To test a demo before using in your main project, visit here and read the README before starting:- [https://github.com/Capta1nRaj/mail-passify-demo/tree/v3.1](https://github.com/Capta1nRaj/mail-passify-demo/tree/v3.1)
 
 ## # Overview
 
 Mail Passify is a Node.js module that empowers you to create a robust user **sign-up** and **sign-in** system with **two-step verification** using **SendGrid**(freemium). It's also equipped with a **built-in referral system** to enhance user engagement and growth. **Note:-** It only supports MongoDB as database for now.
 
-## # Features In v3
+## # Features In v3.1
 
 - ✅ [Compatible with Next.js.](https://nextjs.org/)
-- ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3#1-sign-up-)
-- ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3#3-sign-in-)
+- ✅ [Custom Mail Template*](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#9-custom-email-template)
+- ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#1-sign-up-)
+- ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#3-sign-in-)
 - ✅ [Passwords Are Encrypted With Crypto.](https://nodejs.org/api/crypto.html)
-- ✅ [Referral System.](https://github.com/Capta1nRaj/mail-passify/tree/v3#installation-)
-- ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify/tree/v3#installation-)
-- ✅ [Resend OTP With Limited Requests.](https://github.com/Capta1nRaj/mail-passify/tree/v3#installation-)
-- ✅ [Forgot Password With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3#7-forgot-password-)
-- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify/tree/v3#5-auto-user-session-check-)
-- ✅ [Logout Session Of Current Device.](https://github.com/Capta1nRaj/mail-passify/tree/v3#6-logout-)
-- ✅ [Logout Sessions Of All Devices.](https://github.com/Capta1nRaj/mail-passify/tree/v3#6-logout-)
+- ✅ [Referral System.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#installation-)
+- ✅ [No Disposable E-Mails Are Allowed To Signup.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#installation-)
+- ✅ [Resend OTP With Limited Requests.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#installation-)
+- ✅ [Forgot Password With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#7-forgot-password-)
+- ✅ [Auto User Session Checking.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#5-auto-user-session-check-)
+- ✅ [Logout Session Of Current Device.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#6-logout-)
+- ✅ [Logout Sessions Of All Devices.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#6-logout-)
 
 ## # More Features To Be Added Later
 
@@ -52,7 +53,6 @@ Mail Passify is a Node.js module that empowers you to create a robust user **sig
 * ❌ Delete Account But Make Sure User Don't Get Referral Points Again Once He Sign Up With Any Referral Code.
 
 ## # Getting Started
-
 
 ### Installation:-
 
@@ -88,36 +88,17 @@ ALLOWED_EMAIL_DOMAINS=@gmail.com,@hotmail.com {YOU_CAN_ADD_MORE_BY_SEPERATING_WI
 npx mail-passify init
 ```
 
-4. This will generate a ``mail-passify.json`` file. In this file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
+4. This will generate 2 files ``mail-passify.json`` & ``email-template.html`` files. In ``mail-passify.json`` file, you can configure your data. Please ensure that you maintain the variables in the JSON file as specified below.
 
    | Name                                | Type    | Usage                                  |
    | ----------------------------------- | ------- | -------------------------------------- |
    | SENDGRID_SIGN_UP_MAIL_TITLE         | String  | Custom title for sign-up confirmation. |
    | SENDGRID_SIGN_IN_MAIL_TITLE         | String  | Custom title for sign-in confirmation. |
    | SENDGRID_FORGOT_PASSWORD_MAIL_TITLE | String  | Custom-Forgot-Password-Title.          |
-   | COMPANY_WEBSITE_URL                 | String  | Your company's website URL.            |
-   | COMPANY_WEBSITE_ICON                | String  | URL of your company's website icon.    |
-   | COMPANY_WEBSITE_ICON_WIDTH          | String  | Width of the website icon.             |
-   | COMPANY_CONTACT_MAIL                | String  | Company's contact email address.       |
-   | COMPANY_CUSTOMER_CARE_LINK          | String  | Link for customer support.             |
-   | COMPANY_INSTAGRAM_LINK              | String  | Link to your Instagram profile.        |
-   | COMPANY_INSTAGRAM_ICON              | String  | URL of the Instagram icon.             |
-   | COMPANY_TWITTER_LINK                | String  | Link to your Twitter profile.          |
-   | COMPANY_TWITTER_ICON                | String  | URL of the Twitter icon.               |
-   | COMPANY_YOUTUBE_LINK                | String  | Link to your YouTube channel.          |
-   | COMPANY_YOUTUBE_ICON                | String  | URL of the YouTube icon.               |
-   | COMPANY_MAIL_LINK                   | String  | Company's email address.               |
-   | COMPANY_MAIL_ICON                   | String  | URL of the mail icon.                  |
-   | COMPANY_FACEBOOK_LINK               | String  | Link to your Facebook page.            |
-   | COMPANY_FACEBOOK_ICON               | String  | URL of the Facebook icon.              |
-   | COMPANY_ANDROID_APP_LINK            | String  | Link to your Android app.              |
-   | COMPANY_ANDROID_APP_ICON            | String  | URL of the Android app icon.           |
-   | COMPANY_IOS_APP_LINK                | String  | Link to your iOS app.                  |
-   | COMPANY_IOS_APP_ICON                | String  | URL of the iOS app icon.               |
    | REFERRED_POINTS                     | Integer | Points awarded to the referrer.        |
    | REFERRED_PERSON_POINTS              | Integer | Points awarded to the referred person. |
    | OTP_LIMITS                          | Integer | Max Times User Can Request For OTP.    |
-   
+
 5. Once you update these values, again run this command to update your referral points values in your MongoDB database:-
 
 ```js
@@ -304,8 +285,8 @@ return {
 
 There are **2 methods** to logout the user:-
 
-1. [Logout Current Session Only:-](https://github.com/Capta1nRaj/mail-passify/tree/v3#method-1-current-session-only-) The user gets logged out only from the current device.
-2. [Logout All Sessions:-](https://github.com/Capta1nRaj/mail-passify/tree/v3#method-2-all-sessions-) The user gets logged out from all sessions.
+1. [Logout Current Session Only:-](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#method-1-current-session-only-) The user gets logged out only from the current device.
+2. [Logout All Sessions:-](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#method-2-all-sessions-) The user gets logged out from all sessions.
 
 #### Method 1 (Current Session Only):-
 
@@ -412,9 +393,9 @@ const response = await resendOTP(userNameCookie, 'forgotPassword')
 
 There are **3 functions** to resend OTP to the user:-
 
-1. [Resend OTP For New/Unverified User.](https://github.com/Capta1nRaj/mail-passify/tree/v3#function-1-for-new-users-)
-2. [Resend OTP For Old/Verified User.](https://github.com/Capta1nRaj/mail-passify/tree/v3#function-2-for-old-users-)
-3. [Resend OTP For Forgot Password.](https://github.com/Capta1nRaj/mail-passify/tree/v3#function-3-for-forgot-password-)
+1. [Resend OTP For New/Unverified User.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#function-1-for-new-users-)
+2. [Resend OTP For Old/Verified User.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#function-2-for-old-users-)
+3. [Resend OTP For Forgot Password.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#function-3-for-forgot-password-)
 
 #### Function 1 (For New Users):-
 
@@ -522,5 +503,9 @@ return {
 ```
 
 **Note:-** Once the OTP limits are reached, the user can try again after waiting for 5-10 minutes, as the OTP document from the database will be automatically deleted after this period.
+
+### 9. Custom Email Template:-
+
+To create custom template, update the ``email-template.html`` file. Currently the tempalte only support **plain html with in-line css**, your can checkout the pre-installed template in the file. You can use ChatGPT to convert your template to **plain html with in-line css**.
 
 ### Feel free to raise an issue if you find any bugs. Thanks in advance! 😁
