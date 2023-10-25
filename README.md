@@ -32,7 +32,7 @@ Mail Passify is a Node.js module that empowers you to create a robust user **sig
 ## # Features In v3.1
 
 - ✅ [Compatible with Next.js.](https://nextjs.org/)
-- ✅ [Custom Mail Template*](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#9-custom-email-template)
+- ✅ [Custom Mail Template*](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#9-custom-email-template-)
 - ✅ [Sign-Up With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#1-sign-up-)
 - ✅ [Sign-In With Two-Step Verification.](https://github.com/Capta1nRaj/mail-passify/tree/v3.1#3-sign-in-)
 - ✅ [Passwords Are Encrypted With Crypto.](https://nodejs.org/api/crypto.html)
