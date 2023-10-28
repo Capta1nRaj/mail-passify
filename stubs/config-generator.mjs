@@ -65,6 +65,12 @@ async function generateOrUpdatePoints() {
     // Checking If Points Already Exist In DB Or Not
     const checkingIfDataAlreadyGeneratedOrNot = await settingsModel.findOne({})
 
+    //! Updating The User Email Template To MongoDB
+    const userRmailTemplate = fs.readFileSync('email-template.html', 'utf8');
+
+    // Defining A Dynamic Email Template
+    const htmlTemplate = `${userRmailTemplate}`;
+
     // If No Document Exists In DB, Create A New One.
     if (!checkingIfDataAlreadyGeneratedOrNot) {
 
@@ -75,7 +81,7 @@ async function generateOrUpdatePoints() {
             signup_mail_title: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
             signin_mail_title: userConfig.SENDGRID_SIGN_IN_MAIL_TITLE,
             forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE,
-            email_template: emailTemplate
+            email_template: htmlTemplate
         }).save();
 
         // If Document Exists In DB, We Update It.
@@ -90,7 +96,7 @@ async function generateOrUpdatePoints() {
                 signup_mail_title: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
                 signin_mail_title: userConfig.SENDGRID_SIGN_IN_MAIL_TITLE,
                 forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE,
-                email_template: emailTemplate
+                email_template: htmlTemplate
             },
         });
 
