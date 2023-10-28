@@ -3,32 +3,38 @@
 import { config } from 'dotenv';
 config();
 import sgMail from "@sendgrid/mail";
+import settingsModel from '../models/settingsModel.mjs';
+import { connect2MongoDB } from 'connect2mongodb';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-import fs from 'fs';
-let emailTemplate = fs.readFileSync('email-template.html', 'utf8');
 
 async function sendOTPToUser(username, userEmail, otp, functionPerformed) {
 
-  // It Will Fetch Settings, & Get The Titles From The DB
+  // Connection To MongoDB
+  await connect2MongoDB();
+
+  // It Will Fetch Settings, & Get Email Titles & Template From The DB
   const fetchSettings = await settingsModel.findOne({})
 
+  // Convert userName To Lower Case
   const userName = username.toLowerCase();
 
+  // Detecting Title Upon The Usage
   let emailTitle;
 
   if (functionPerformed === 'signUp') {
-    emailTitle = fetchSettings.sendgrid_sign_up_mail_title;
+    emailTitle = fetchSettings.signup_mail_title;
   } else if (functionPerformed === 'signIn') {
-    emailTitle = fetchSettings.sendgrid_sign_in_mail_title;
+    emailTitle = fetchSettings.signin_mail_title;
   } else if (functionPerformed === 'forgotPassword') {
-    emailTitle = fetchSettings.sendgrid_forgot_password_mail_title;
+    emailTitle = fetchSettings.forgot_password_mail_title;
   }
 
-  const replacedHtml = emailTemplate
+  // Updating The Email Template With userName & OTP
+  const replacedHtml = fetchSettings.email_template
     .replaceAll('{{userName}}', userName)
     .replaceAll('{{otp}}', otp)
 
+  // Generating Mail Via Sendgrid
   const msg = {
     to: userEmail,
     from: process.env.SENDGRID_EMAIL_ID,
@@ -36,6 +42,7 @@ async function sendOTPToUser(username, userEmail, otp, functionPerformed) {
     html: replacedHtml
   };
 
+  // Sending Mail Via Sendgrid
   sgMail.send(msg);
 }
 

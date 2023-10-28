@@ -20,6 +20,7 @@ async function sessionCheck(username, token, id) {
             };
         }
 
+        // Connection To MongoDB
         await connect2MongoDB();
 
         // Find User Session Using ID

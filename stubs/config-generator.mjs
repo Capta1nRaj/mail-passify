@@ -74,7 +74,8 @@ async function generateOrUpdatePoints() {
             otp_limits: userConfig.OTP_LIMITS,
             signup_mail_title: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
             signin_mail_title: userConfig.SENDGRID_SIGN_IN_MAIL_TITLE,
-            forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE
+            forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE,
+            email_template: emailTemplate
         }).save();
 
         // If Document Exists In DB, We Update It.
@@ -88,7 +89,8 @@ async function generateOrUpdatePoints() {
                 otp_limits: userConfig.OTP_LIMITS,
                 signup_mail_title: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
                 signin_mail_title: userConfig.SENDGRID_SIGN_IN_MAIL_TITLE,
-                forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE
+                forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE,
+                email_template: emailTemplate
             },
         });
 
