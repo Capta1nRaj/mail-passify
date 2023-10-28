@@ -5,8 +5,6 @@ import sendOTPToUser from "./sendOTPToUser.mjs";
 import randomStringGenerator from "./randomStringGenerator.mjs";
 import encryptPassword from "./PasswordHashing/encryptPassword.mjs";
 import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
-import fs from 'fs';
-const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
 
 async function forgotPassword(username, OTP, newPassword) {
 
@@ -73,7 +71,10 @@ async function forgotPassword(username, OTP, newPassword) {
                 } else if (checkIfUserAlreadyRequestedForOTP !== null) {
 
                     // If It Reaches The Limit i.e. OTP_LIMITS in JSON file, Then, Tell User To Try After 10 Minutes
-                    if (checkIfUserAlreadyRequestedForOTP.OTPCount >= userConfig.OTP_LIMITS) {
+
+                    // It Will Fetch Settings, & Get The OTP Limits Values From The DB
+                    const fetchSettings = await settingsModel.findOne({})
+                    if (checkIfUserAlreadyRequestedForOTP.OTPCount >= fetchSettings.otp_limits) {
                         return {
                             status: 403,
                             message: "Max OTP Limit Reached, Please Try After 10 Minutes."

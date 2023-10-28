@@ -9,9 +9,6 @@ import fetchUserIP from "../fetchUserIP.mjs";
 import randomStringGenerator from "../randomStringGenerator.mjs";
 import sendOTPToUser from "../sendOTPToUser.mjs";
 
-import fs from 'fs';
-const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
-
 import { config } from 'dotenv';
 config();
 
@@ -59,7 +56,10 @@ async function signin(username, userPassword) {
 
             // Check If OTP Limit Is Exceeded Or Not
             // If Exceeded Then Don't Generate More OTP
-            if (checkIfOTPExistOrNot.OTPCount >= userConfig.OTP_LIMITS) {
+
+            // It Will Fetch Settings, & Get The OTP Limits Values From The DB
+            const fetchSettings = await settingsModel.findOne({})
+            if (checkIfOTPExistOrNot.OTPCount >= fetchSettings.otp_limits) {
                 return {
                     status: 403,
                     message: "Max OTP Limit Reached, Please Try After 10 Minutes."

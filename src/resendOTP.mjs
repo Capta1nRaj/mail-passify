@@ -3,9 +3,6 @@ import accountsModel from "../models/accountsModel.mjs";
 import sessionsModel from "../models/sessionsModel.mjs";
 import otpModel from "../models/otpModel.mjs";
 
-import fs from 'fs';
-const userConfig = JSON.parse(fs.readFileSync('mail-passify.json'));
-
 import sendOTPToUser from "./sendOTPToUser.mjs";
 import fetchUserIP from "./fetchUserIP.mjs";
 import randomStringGenerator from "./randomStringGenerator.mjs";
@@ -23,6 +20,9 @@ async function resendOTP(username, functionPerformed, token, id) {
     // Generating userOTP Of Length 6
     const userOTP = await randomStringGenerator(6);
 
+    // It Will Fetch Settings, & Get The OTP Limits Values From The DB
+    const fetchSettings = await settingsModel.findOne({})
+
     // If New User Verification Needs To Be Done, Run This Function
     if (functionPerformed === 'newUserVerification') {
 
@@ -39,7 +39,8 @@ async function resendOTP(username, functionPerformed, token, id) {
 
         // If User Exist, Then, We Will Try To Check That How Many Times Did User Reguested For OTP
         // If It Reaches The Limit i.e. OTP_LIMITS in JSON file, Then, Tell User To Try After 10 Minutes
-        if (findIfUserNameExistBeforeSending.OTPCount >= userConfig.OTP_LIMITS) {
+
+        if (findIfUserNameExistBeforeSending.OTPCount >= fetchSettings.otp_limits) {
             return {
                 status: 403,
                 message: "Max OTP Limit Reached, Please Try After 10 Minutes."
@@ -80,7 +81,7 @@ async function resendOTP(username, functionPerformed, token, id) {
             }
 
             // If It Reaches The Limit i.e. OTP_LIMITS in JSON file, Then, Tell User To Try After 10 Minutes
-            if (findUserSessionViaID.OTPCount >= userConfig.OTP_LIMITS) {
+            if (findUserSessionViaID.OTPCount >= fetchSettings.otp_limits) {
                 return {
                     status: 403,
                     message: "Max OTP Limit Reached, Please Try After 10 Minutes."
@@ -154,7 +155,7 @@ async function resendOTP(username, functionPerformed, token, id) {
         }
 
         // If It Reaches The Limit i.e. OTP_LIMITS in JSON file, Then, Tell User To Try After 10 Minutes
-        if (findIfUserNameExistBeforeSending.OTPCount >= userConfig.OTP_LIMITS) {
+        if (findIfUserNameExistBeforeSending.OTPCount >= fetchSettings.otp_limits) {
 
             return {
                 status: 403,

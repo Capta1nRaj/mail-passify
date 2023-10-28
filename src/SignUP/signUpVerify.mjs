@@ -57,15 +57,15 @@ async function signUpVerify(username, otp) {
             // If User Is Referred By Someone
         } else if (getTheUserWhomHeGotReferred.userReferredBy.length !== 0) {
 
-            // It Will Get The Points Values From The DB
-            const getPointsValues = await settingsModel.findOne({})
+            // It Will Fetch Settings, & Get The Points Values From The DB
+            const fetchSettings = await settingsModel.findOne({})
 
             // First, It Will Verify The User's Account And Assign Them The Referral Points (REFERRED_PERSON_POINTS as per JSON File)
-            const verifyUser = await accountsModel.findOneAndUpdate({ userName: userName }, { $set: { userVerified: true }, $inc: { points: getPointsValues.referred_person_points } }, { new: true });
+            const verifyUser = await accountsModel.findOneAndUpdate({ userName: userName }, { $set: { userVerified: true }, $inc: { points: fetchSettings.referred_person_points } }, { new: true });
 
             // Secondly, It Will Update The Points For The User (REFERRED_POINTS As Per JSON File) Who Referred Them And Add The User's userName To The Referrer's List
             // It Will User The Referral Code To Find The User Who Referred A New User
-            var updateTheReferralPoints = await accountsModel.findOneAndUpdate({ userName: getTheUserWhomHeGotReferred.userReferredBy }, { $addToSet: { userReferrals: getTheUserWhomHeGotReferred.userName }, $inc: { points: getPointsValues.referred_points } }, { new: true });
+            var updateTheReferralPoints = await accountsModel.findOneAndUpdate({ userName: getTheUserWhomHeGotReferred.userReferredBy }, { $addToSet: { userReferrals: getTheUserWhomHeGotReferred.userName }, $inc: { points: fetchSettings.referred_points } }, { new: true });
         }
 
         // Delete The OTP From otpModel Collection

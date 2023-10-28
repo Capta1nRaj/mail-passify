@@ -6,22 +6,23 @@ import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 import fs from 'fs';
-let userConfiJSONData = fs.readFileSync('mail-passify.json');
-let userConfig = JSON.parse(userConfiJSONData);
 let emailTemplate = fs.readFileSync('email-template.html', 'utf8');
 
 async function sendOTPToUser(username, userEmail, otp, functionPerformed) {
+
+  // It Will Fetch Settings, & Get The Titles From The DB
+  const fetchSettings = await settingsModel.findOne({})
 
   const userName = username.toLowerCase();
 
   let emailTitle;
 
   if (functionPerformed === 'signUp') {
-    emailTitle = userConfig.SENDGRID_SIGN_UP_MAIL_TITLE;
+    emailTitle = fetchSettings.sendgrid_sign_up_mail_title;
   } else if (functionPerformed === 'signIn') {
-    emailTitle = userConfig.SENDGRID_SIGN_IN_MAIL_TITLE;
+    emailTitle = fetchSettings.sendgrid_sign_in_mail_title;
   } else if (functionPerformed === 'forgotPassword') {
-    emailTitle = userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE;
+    emailTitle = fetchSettings.sendgrid_forgot_password_mail_title;
   }
 
   const replacedHtml = emailTemplate

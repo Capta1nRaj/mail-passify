@@ -20,7 +20,7 @@ async function generateConfigFile() {
         "SENDGRID_SIGN_IN_MAIL_TITLE": "Custom-Signin-Title",
         "SENDGRID_FORGOT_PASSWORD_MAIL_TITLE": "Custom-Forgot-Password-Title",
         "REFERRED_POINTS": 100,
-        "REFERRED_PERSON_POINTS": 25,
+        "REFERRED_PERSON_POINTS": 50,
         "OTP_LIMITS": 3,
     }
 
@@ -71,6 +71,10 @@ async function generateOrUpdatePoints() {
         await new settingsModel({
             referred_points: userConfig.REFERRED_POINTS,
             referred_person_points: userConfig.REFERRED_PERSON_POINTS,
+            otp_limits: userConfig.OTP_LIMITS,
+            signup_mail_title: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
+            signin_mail_title: userConfig.SENDGRID_SIGN_IN_MAIL_TITLE,
+            forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE
         }).save();
 
         // If Document Exists In DB, We Update It.
@@ -81,6 +85,10 @@ async function generateOrUpdatePoints() {
             $set: {
                 referred_points: userConfig.REFERRED_POINTS,
                 referred_person_points: userConfig.REFERRED_PERSON_POINTS,
+                otp_limits: userConfig.OTP_LIMITS,
+                signup_mail_title: userConfig.SENDGRID_SIGN_UP_MAIL_TITLE,
+                signin_mail_title: userConfig.SENDGRID_SIGN_IN_MAIL_TITLE,
+                forgot_password_mail_title: userConfig.SENDGRID_FORGOT_PASSWORD_MAIL_TITLE
             },
         });
 
