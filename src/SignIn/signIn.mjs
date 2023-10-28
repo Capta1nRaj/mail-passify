@@ -10,18 +10,17 @@ import randomStringGenerator from "../randomStringGenerator.mjs";
 import sendOTPToUser from "../sendOTPToUser.mjs";
 
 import { config } from 'dotenv';
+import settingsModel from "../../models/settingsModel.mjs";
 config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function signin(username, userPassword) {
 
-    const userName = username.toLowerCase();
-
     await connect2MongoDB();
 
     // Finding If User Exist Or Not Fron userName
-    const findUserToLogin = await accountsModel.findOne({ userName });
+    const findUserToLogin = await accountsModel.findOne({ userName: username.toLowerCase() });
 
     // If userName Don't Exist, Return A Bad Request
     if (!findUserToLogin) {
@@ -41,13 +40,13 @@ async function signin(username, userPassword) {
         const encryptedOTP = await encryptPassword(userOTP);
 
         // Checking If OTP Already Exist In DB Or Not
-        const checkIfOTPExistOrNot = await otpModel.findOne({ userName });
+        const checkIfOTPExistOrNot = await otpModel.findOne({ userName: username.toLowerCase() });
 
         // If OTP Not Exist, Then, Create A New Doc & Save To DB
         if (!checkIfOTPExistOrNot) {
 
             new otpModel({
-                userName,
+                userName: username.toLowerCase(),
                 OTP: encryptedOTP,
             }).save();
 
@@ -67,17 +66,17 @@ async function signin(username, userPassword) {
             }
 
             // If Not Exceeded Then Generate New OTP & Increase OTPCount By 1
-            await otpModel.findOneAndUpdate({ userName }, { $inc: { OTPCount: 1 }, OTP: encryptedOTP }, { new: true });
+            await otpModel.findOneAndUpdate({ userName: username.toLowerCase() }, { $inc: { OTPCount: 1 }, OTP: encryptedOTP }, { new: true });
 
         }
 
         // Sending OTP To User Registered E-Mail
-        await sendOTPToUser(userName, findUserToLogin.userEmail, userOTP, 'signUp');
+        await sendOTPToUser(username.toLowerCase(), findUserToLogin.userEmail, userOTP, 'signUp');
 
         return {
             status: 401,
             message: "Please Verify Your Account",
-            userName,
+            userName: username.toLowerCase(),
         };
     }
 
@@ -88,7 +87,7 @@ async function signin(username, userPassword) {
     const userIP = await fetchUserIP();
 
     // Checking If userName & userPassword Are The Same As Per The Client Entered
-    if (findUserToLogin.userName === userName && decryptedPassword) {
+    if (findUserToLogin.userName === username.toLowerCase() && decryptedPassword) {
 
         // Generating Token Address Of 128 Length
         const userTokenAddress = await randomStringGenerator(128);
@@ -104,19 +103,19 @@ async function signin(username, userPassword) {
 
         // Saving Session To DB
         const savedData = await new sessionsModel({
-            userName,
+            userName: username.toLowerCase(),
             token: userTokenAddress,
             userIP: encryptedUserIP,
             OTP: encryptedOTP,
         }).save();
 
         // Sending OTP To User Registered E-Mail
-        await sendOTPToUser(userName, findUserToLogin.userEmail, userOTP, 'signIn');
+        await sendOTPToUser(username.toLowerCase(), findUserToLogin.userEmail, userOTP, 'signIn');
 
         return {
             status: 201,
             message: "Sign In Successful, OTP Sent To Mail",
-            userName,
+            userName: username.toLowerCase(),
             token: userTokenAddress,
             id: savedData.id
         };

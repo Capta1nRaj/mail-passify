@@ -4,16 +4,6 @@ import sessionsModel from "../../models/sessionsModel.mjs";
 
 async function signInVerify(username, otp, id) {
 
-    const userName = username.toLowerCase();
-
-    // If User Enters OTP With Length Greater Than 6, Throw An Error
-    if (otp.length > 6) {
-        return {
-            status: 400,
-            message: "Wrong OTP",
-        };
-    }
-
     await connect2MongoDB();
 
     try {
@@ -25,7 +15,7 @@ async function signInVerify(username, otp, id) {
         const decryptedOTP = (otp === await decryptPassword(getDocumentViaID.OTP));
 
         // If userName Is Same, & OTP Is Also Same, Update The Session Fields, Else Throw An Error
-        if (getDocumentViaID.userName === userName && decryptedOTP === true) {
+        if (getDocumentViaID.userName === username.toLowerCase() && decryptedOTP === true) {
 
             // This Will Update userVerified To True, Update ExpireAt After 10 Days, Remove OTP & OTPCount Fields Too
             await sessionsModel.findByIdAndUpdate(id, { userVerified: true, $unset: { OTP: 1, OTPCount: 1 }, $set: { expireAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) } }, { new: true });

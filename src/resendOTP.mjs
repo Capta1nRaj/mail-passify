@@ -9,6 +9,7 @@ import randomStringGenerator from "./randomStringGenerator.mjs";
 import encryptPassword from "./PasswordHashing/encryptPassword.mjs";
 import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
 import { config } from 'dotenv';
+import settingsModel from "../models/settingsModel.mjs";
 config();
 
 async function resendOTP(username, functionPerformed, token, id) {

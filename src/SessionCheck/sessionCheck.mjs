@@ -8,12 +8,10 @@ config();
 
 async function sessionCheck(username, token, id) {
 
-    const userName = username.toLowerCase();
-
     try {
 
-        // Checking If userName, Token, & id Is Passed By Client Or Not
-        if (userName === undefined || token === undefined || id === undefined || userName.length === 0 || token.length === 0) {
+        // Checking If username, Token, & id Is Passed By Client Or Not
+        if (username.toLowerCase() === undefined || token === undefined || id === undefined || username.toLowerCase().length === 0 || token.length === 0) {
             return {
                 status: 204,
                 message: "Please Provide Username, Token, & Id",
@@ -41,11 +39,11 @@ async function sessionCheck(username, token, id) {
         // Fetching User IP
         const userIP = await fetchUserIP();
 
-        if (findSessionUsingUserID.userName === userName && findSessionUsingUserID.token === token && userIPDecrypted === userIP && findSessionUsingUserID.userVerified === true) {
+        if (findSessionUsingUserID.userName === username.toLowerCase() && findSessionUsingUserID.token === token && userIPDecrypted === userIP && findSessionUsingUserID.userVerified === true) {
             return {
                 status: 202,
                 message: "Session exists.",
-                userName
+                userName: username.toLowerCase()
             };
 
         } else {

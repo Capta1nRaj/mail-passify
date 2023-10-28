@@ -5,8 +5,6 @@ import fetchUserIP from "../fetchUserIP.mjs";
 
 async function logoutAll(username, token, id) {
 
-    const userName = username.toLowerCase();
-
     await connect2MongoDB();
 
     try {
@@ -28,9 +26,9 @@ async function logoutAll(username, token, id) {
         // Fetching User IP
         const userIP = await fetchUserIP();
 
-        // If Current Session Exist In DB, Then, Delte All The Sessions Which Have The userName In It
-        if (findUserSession.userName === userName && findUserSession.token === token && userIPDecrypted === userIP) {
-            await sessionsModel.deleteMany({ userName: userName });
+        // If Current Session Exist In DB, Then, Delte All The Sessions Which Have The username In It
+        if (findUserSession.userName === username.toLowerCase() && findUserSession.token === token && userIPDecrypted === userIP) {
+            await sessionsModel.deleteMany({ userName: username.toLowerCase() });
             return {
                 status: 200,
                 message: "All Of The User's Session Deleted.",

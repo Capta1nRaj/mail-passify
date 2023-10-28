@@ -15,9 +15,6 @@ async function sendOTPToUser(username, userEmail, otp, functionPerformed) {
   // It Will Fetch Settings, & Get Email Titles & Template From The DB
   const fetchSettings = await settingsModel.findOne({})
 
-  // Convert userName To Lower Case
-  const userName = username.toLowerCase();
-
   // Detecting Title Upon The Usage
   let emailTitle;
 
@@ -29,9 +26,9 @@ async function sendOTPToUser(username, userEmail, otp, functionPerformed) {
     emailTitle = fetchSettings.forgot_password_mail_title;
   }
 
-  // Updating The Email Template With userName & OTP
+  // Updating The Email Template With username & OTP
   const replacedHtml = fetchSettings.email_template
-    .replaceAll('{{userName}}', userName)
+    .replaceAll('{{username}}', username.toLowerCase())
     .replaceAll('{{otp}}', otp)
 
   // Generating Mail Via Sendgrid

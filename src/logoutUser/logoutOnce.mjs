@@ -5,8 +5,6 @@ import fetchUserIP from "../fetchUserIP.mjs";
 
 async function logoutOnce(username, token, id) {
 
-    const userName = username.toLowerCase();
-
     await connect2MongoDB();
 
     try {
@@ -29,7 +27,7 @@ async function logoutOnce(username, token, id) {
         const userIP = await fetchUserIP();
 
         // If Current Session Exist In DB, Then, Delete That Specific Session
-        if (findUserSession.userName === userName && findUserSession.token === token && userIPDecrypted === userIP) {
+        if (findUserSession.userName === username.toLowerCase() && findUserSession.token === token && userIPDecrypted === userIP) {
             await sessionsModel.findByIdAndDelete(id);
             return {
                 status: 200,

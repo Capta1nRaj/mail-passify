@@ -5,14 +5,13 @@ import sendOTPToUser from "./sendOTPToUser.mjs";
 import randomStringGenerator from "./randomStringGenerator.mjs";
 import encryptPassword from "./PasswordHashing/encryptPassword.mjs";
 import decryptPassword from "./PasswordHashing/decryptPassword.mjs";
+import settingsModel from "../models/settingsModel.mjs";
 
 async function forgotPassword(username, OTP, newPassword) {
 
-    const userName = username.toLowerCase();
-
     try {
 
-        if (userName.length === 0) {
+        if (username.toLowerCase().length === 0) {
 
             return {
                 status: 401,
@@ -22,12 +21,12 @@ async function forgotPassword(username, OTP, newPassword) {
         }
 
         // Using This Case, We Are Generating OTP For User To Authenticate
-        if (userName !== undefined && OTP === undefined && newPassword === undefined) {
+        if (username.toLowerCase() !== undefined && OTP === undefined && newPassword === undefined) {
 
             await connect2MongoDB();
 
             // First We Find If User Exist Or Not
-            const finduserAndSendEmailForVerification = await accountsModel.findOne({ userName: userName });
+            const finduserAndSendEmailForVerification = await accountsModel.findOne({ userName: username.toLowerCase() });
 
             // If Not, Client Will Receive This Response
             if (finduserAndSendEmailForVerification === null) {
@@ -41,7 +40,7 @@ async function forgotPassword(username, OTP, newPassword) {
             } else if (finduserAndSendEmailForVerification !== null) {
 
                 // Checking If OTP Already Exist In DB Or Not
-                const checkIfUserAlreadyRequestedForOTP = await otpModel.findOne({ userName: userName })
+                const checkIfUserAlreadyRequestedForOTP = await otpModel.findOne({ userName: username.toLowerCase() })
 
                 // If Not, Then, Save The OTP In DB
                 if (checkIfUserAlreadyRequestedForOTP === null) {
@@ -57,14 +56,14 @@ async function forgotPassword(username, OTP, newPassword) {
 
                     // Saving Details To DB
                     new otpModel({
-                        userName: userName,
+                        userName: username.toLowerCase(),
                         OTP: encryptedOTP
                     }).save();
 
                     return {
                         status: 201,
                         message: "OTP Sent To Mail",
-                        userName: userName,
+                        userName: username.toLowerCase(),
                     };
 
                     // If OTP Exist, Then, Update The Docuement In The DB
@@ -102,7 +101,7 @@ async function forgotPassword(username, OTP, newPassword) {
                     return {
                         status: 201,
                         message: "OTP Sent To Mail",
-                        userName: userName,
+                        userName: username.toLowerCase(),
                     };
 
                 }
@@ -110,7 +109,7 @@ async function forgotPassword(username, OTP, newPassword) {
 
             // When User Enters OTP, & New Password, Then,
             // First We Will Validate The OTP, Then, If OTP Corrent We Update The Password, Else We Throw Error As Response To The Client
-        } else if (userName !== undefined && OTP !== undefined && newPassword !== undefined) {
+        } else if (username.toLowerCase() !== undefined && OTP !== undefined && newPassword !== undefined) {
 
             // If User Enters OTP With Length Greater Than 6, Throw An Error
             if (OTP.length > 6) {
@@ -131,7 +130,7 @@ async function forgotPassword(username, OTP, newPassword) {
             await connect2MongoDB();
 
             // Find The OTP In The DB To Verify
-            const finduserAndSendEmailForVerification = await otpModel.findOne({ userName: userName });
+            const finduserAndSendEmailForVerification = await otpModel.findOne({ userName: username.toLowerCase() });
 
             // Decrypting The OTP From The User
             const decryptedOTP = (OTP === await decryptPassword(finduserAndSendEmailForVerification.OTP));
@@ -149,9 +148,9 @@ async function forgotPassword(username, OTP, newPassword) {
 
                 const encryptedPassword = await encryptPassword(newPassword)
 
-                const findAndUpdatePassword = await accountsModel.findOneAndUpdate({ userName: userName }, { userPassword: encryptedPassword }, { new: true });
+                const findAndUpdatePassword = await accountsModel.findOneAndUpdate({ userName: username.toLowerCase() }, { userPassword: encryptedPassword }, { new: true });
 
-                const deleteTheOTPModel = await otpModel.findOneAndDelete({ userName })
+                const deleteTheOTPModel = await otpModel.findOneAndDelete({ userName: username.toLowerCase() })
 
                 return {
                     status: 200,
